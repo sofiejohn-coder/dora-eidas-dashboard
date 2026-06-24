@@ -3,81 +3,64 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DORA & eIDAS 2.0 Compliance Dashboard | PwC</title>
+<title>DORA & eIDAS 2.0 Compliance Dashboard</title>
 <style>
   :root {
-    --pwc-orange: #D04A02;
-    --pwc-orange-dark: #DB4E18;
-    --pwc-orange-light: #E87722;
-    --pwc-yellow: #FFB600;
-    --pwc-yellow-bright: #F3BE26;
-    --pwc-red: #E0301E;
-    --pwc-red-dark: #AD1B02;
-    --pwc-pink: #E669A2;
-    --pwc-rose: #DB536A;
-    --pwc-black: #000000;
-    --pwc-grey-900: #2D2D2D;
-    --pwc-grey-700: #464646;
-    --pwc-grey-500: #7D7D7D;
-    --pwc-grey-300: #BDBDBD;
-    --pwc-grey-100: #F2F2F2;
-    --pwc-white: #FFFFFF;
+    --c-primary: #D04A02;
+    --c-primary-dark: #DB4E18;
+    --c-primary-light: #E87722;
+    --c-accent: #FFB600;
+    --c-accent-bright: #F3BE26;
+    --c-alert: #E0301E;
+    --c-alert-dark: #AD1B02;
+    --c-highlight: #E669A2;
+    --c-highlight-rose: #DB536A;
+    --c-black: #000000;
+    --c-grey-900: #2D2D2D;
+    --c-grey-700: #464646;
+    --c-grey-500: #7D7D7D;
+    --c-grey-300: #BDBDBD;
+    --c-grey-100: #F2F2F2;
+    --c-white: #FFFFFF;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background: var(--pwc-grey-100);
-    color: var(--pwc-grey-900);
+    background: var(--c-grey-100);
+    color: var(--c-grey-900);
     min-height: 100vh;
     padding: 24px;
     line-height: 1.5;
   }
   header {
-    background: var(--pwc-white);
-    border-top: 6px solid var(--pwc-orange);
+    background: var(--c-white);
+    border-top: 6px solid var(--c-primary);
     border-radius: 2px;
     padding: 28px 32px;
     margin-bottom: 24px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 20px;
   }
   .header-text h1 {
     font-size: 1.9em;
-    color: var(--pwc-black);
+    color: var(--c-black);
     margin-bottom: 6px;
     font-weight: 700;
     letter-spacing: -0.02em;
   }
   .header-text p {
-    color: var(--pwc-grey-500);
+    color: var(--c-grey-500);
     font-size: 0.98em;
-  }
-  .pwc-logo { display: flex; align-items: center; gap: 14px; }
-  .pwc-logo-mark { display: flex; flex-direction: column; line-height: 1; }
-  .pwc-logo-mark .squares { display: flex; gap: 3px; margin-bottom: 6px; }
-  .pwc-logo-mark .squares span { width: 11px; height: 11px; display: block; }
-  .pwc-logo-mark .sq1 { background: var(--pwc-yellow); }
-  .pwc-logo-mark .sq2 { background: var(--pwc-orange-light); }
-  .pwc-logo-mark .sq3 { background: var(--pwc-orange); }
-  .pwc-logo-mark .sq4 { background: var(--pwc-red-dark); }
-  .pwc-logo-mark .wordmark {
-    font-weight: 700; font-size: 1.25em;
-    color: var(--pwc-black); letter-spacing: -0.03em;
   }
   .validated-badge {
     display: inline-block;
-    background: var(--pwc-grey-100);
-    color: var(--pwc-grey-700);
+    background: var(--c-grey-100);
+    color: var(--c-grey-700);
     padding: 4px 12px;
     border-radius: 2px;
     font-size: 0.7em;
     font-weight: 600;
     margin-left: 8px;
-    border-left: 3px solid var(--pwc-yellow);
+    border-left: 3px solid var(--c-accent);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -88,19 +71,19 @@
     margin-bottom: 24px;
   }
   .kpi-card {
-    background: var(--pwc-white);
-    border-top: 4px solid var(--pwc-orange);
+    background: var(--c-white);
+    border-top: 4px solid var(--c-primary);
     padding: 20px 22px;
     border-radius: 2px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     transition: transform 0.15s, box-shadow 0.15s;
   }
   .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-  .kpi-card.warn { border-top-color: var(--pwc-yellow); }
-  .kpi-card.alert { border-top-color: var(--pwc-red); }
-  .kpi-card.success { border-top-color: var(--pwc-orange-dark); }
+  .kpi-card.warn { border-top-color: var(--c-accent); }
+  .kpi-card.alert { border-top-color: var(--c-alert); }
+  .kpi-card.success { border-top-color: var(--c-primary-dark); }
   .kpi-card h3 {
-    color: var(--pwc-grey-500);
+    color: var(--c-grey-500);
     font-size: 0.72em;
     text-transform: uppercase;
     letter-spacing: 1.2px;
@@ -109,24 +92,24 @@
   }
   .kpi-card .value {
     font-size: 2.1em; font-weight: 700;
-    color: var(--pwc-black); letter-spacing: -0.02em;
+    color: var(--c-black); letter-spacing: -0.02em;
   }
-  .kpi-card.alert .value { color: var(--pwc-red); }
-  .kpi-card.warn .value { color: var(--pwc-orange); }
-  .kpi-card.success .value { color: var(--pwc-orange-dark); }
-  .kpi-card .sub { font-size: 0.78em; color: var(--pwc-grey-500); margin-top: 4px; }
+  .kpi-card.alert .value { color: var(--c-alert); }
+  .kpi-card.warn .value { color: var(--c-primary); }
+  .kpi-card.success .value { color: var(--c-primary-dark); }
+  .kpi-card .sub { font-size: 0.78em; color: var(--c-grey-500); margin-top: 4px; }
   .tabs {
     display: flex; flex-wrap: wrap; gap: 0;
     margin-bottom: 20px;
-    background: var(--pwc-white);
+    background: var(--c-white);
     border-radius: 2px;
     padding: 0;
     box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     overflow: hidden;
   }
   .tab-btn {
-    background: var(--pwc-white);
-    color: var(--pwc-grey-700);
+    background: var(--c-white);
+    color: var(--c-grey-700);
     border: none;
     padding: 14px 22px;
     cursor: pointer;
@@ -136,60 +119,60 @@
     border-bottom: 3px solid transparent;
     font-family: inherit;
   }
-  .tab-btn:hover { background: var(--pwc-grey-100); color: var(--pwc-orange); }
+  .tab-btn:hover { background: var(--c-grey-100); color: var(--c-primary); }
   .tab-btn.active {
-    color: var(--pwc-orange);
-    border-bottom-color: var(--pwc-orange);
-    background: var(--pwc-white);
+    color: var(--c-primary);
+    border-bottom-color: var(--c-primary);
+    background: var(--c-white);
   }
   .tab-content { display: none; }
   .tab-content.active { display: block; animation: fadeIn 0.25s ease-out; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
   .section-card {
-    background: var(--pwc-white);
+    background: var(--c-white);
     padding: 28px 32px;
     border-radius: 2px;
     margin-bottom: 20px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   }
   .section-card h2 {
-    color: var(--pwc-black);
+    color: var(--c-black);
     margin-bottom: 18px;
     padding-bottom: 12px;
-    border-bottom: 2px solid var(--pwc-orange);
+    border-bottom: 2px solid var(--c-primary);
     font-size: 1.35em;
     font-weight: 700;
     letter-spacing: -0.01em;
   }
   .section-card h3 {
-    color: var(--pwc-grey-900);
+    color: var(--c-grey-900);
     margin: 22px 0 12px;
     font-size: 1.05em;
     font-weight: 600;
     padding-left: 10px;
-    border-left: 3px solid var(--pwc-yellow);
+    border-left: 3px solid var(--c-accent);
   }
-  .section-card p { color: var(--pwc-grey-700); }
-  .section-card strong { color: var(--pwc-black); }
+  .section-card p { color: var(--c-grey-700); }
+  .section-card strong { color: var(--c-black); }
   .task-list { list-style: none; }
   .task-item {
-    background: var(--pwc-white);
+    background: var(--c-white);
     margin: 10px 0;
     padding: 16px 18px;
     border-radius: 2px;
-    border: 1px solid var(--pwc-grey-300);
-    border-left: 4px solid var(--pwc-grey-300);
+    border: 1px solid var(--c-grey-300);
+    border-left: 4px solid var(--c-grey-300);
     transition: all 0.15s;
   }
-  .task-item:hover { border-left-color: var(--pwc-orange); background: var(--pwc-grey-100); }
-  .task-item.completed { background: var(--pwc-grey-100); border-left-color: var(--pwc-grey-500); }
-  .task-item.completed .task-label { text-decoration: line-through; color: var(--pwc-grey-500); }
+  .task-item:hover { border-left-color: var(--c-primary); background: var(--c-grey-100); }
+  .task-item.completed { background: var(--c-grey-100); border-left-color: var(--c-grey-500); }
+  .task-item.completed .task-label { text-decoration: line-through; color: var(--c-grey-500); }
   .task-row-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
   .task-row-top input[type="checkbox"] {
     margin-top: 4px; width: 18px; height: 18px;
-    accent-color: var(--pwc-orange); cursor: pointer; flex-shrink: 0;
+    accent-color: var(--c-primary); cursor: pointer; flex-shrink: 0;
   }
-  .task-label { flex: 1; line-height: 1.5; font-size: 0.95em; cursor: pointer; color: var(--pwc-grey-900); }
+  .task-label { flex: 1; line-height: 1.5; font-size: 0.95em; cursor: pointer; color: var(--c-grey-900); }
   .task-meta {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -200,15 +183,15 @@
   .meta-field { display: flex; flex-direction: column; gap: 4px; }
   .meta-field label {
     font-size: 0.68em;
-    color: var(--pwc-grey-500);
+    color: var(--c-grey-500);
     text-transform: uppercase;
     letter-spacing: 0.8px;
     font-weight: 600;
   }
   .meta-field input, .meta-field select {
-    background: var(--pwc-white);
-    color: var(--pwc-grey-900);
-    border: 1px solid var(--pwc-grey-300);
+    background: var(--c-white);
+    color: var(--c-grey-900);
+    border: 1px solid var(--c-grey-300);
     padding: 6px 10px;
     border-radius: 2px;
     font-size: 0.85em;
@@ -217,37 +200,37 @@
   }
   .meta-field input:focus, .meta-field select:focus {
     outline: none;
-    border-color: var(--pwc-orange);
+    border-color: var(--c-primary);
     box-shadow: 0 0 0 2px rgba(208,74,2,0.15);
   }
-  .priority-high { border-left-color: var(--pwc-red) !important; }
-  .priority-medium { border-left-color: var(--pwc-yellow) !important; }
-  .priority-low { border-left-color: var(--pwc-orange-dark) !important; }
+  .priority-high { border-left-color: var(--c-alert) !important; }
+  .priority-medium { border-left-color: var(--c-accent) !important; }
+  .priority-low { border-left-color: var(--c-primary-dark) !important; }
   .article-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; padding-left: 30px; }
   .article-tag {
     font-size: 0.72em; padding: 3px 10px;
     border-radius: 2px; font-weight: 600; letter-spacing: 0.3px;
   }
-  .tag-dora { background: var(--pwc-white); color: var(--pwc-red-dark); border: 1px solid var(--pwc-red-dark); }
-  .tag-eidas { background: var(--pwc-white); color: var(--pwc-orange); border: 1px solid var(--pwc-orange); }
-  .tag-topic { background: var(--pwc-grey-100); color: var(--pwc-grey-700); border: 1px solid var(--pwc-grey-300); font-style: italic; }
+  .tag-dora { background: var(--c-white); color: var(--c-alert-dark); border: 1px solid var(--c-alert-dark); }
+  .tag-eidas { background: var(--c-white); color: var(--c-primary); border: 1px solid var(--c-primary); }
+  .tag-topic { background: var(--c-grey-100); color: var(--c-grey-700); border: 1px solid var(--c-grey-300); font-style: italic; }
   .progress-bar-container {
-    background: var(--pwc-grey-100);
+    background: var(--c-grey-100);
     border-radius: 2px;
     height: 28px;
     overflow: hidden;
     margin: 10px 0;
-    border: 1px solid var(--pwc-grey-300);
+    border: 1px solid var(--c-grey-300);
   }
   .progress-bar {
-    background: linear-gradient(90deg, var(--pwc-orange) 0%, var(--pwc-orange-light) 50%, var(--pwc-yellow) 100%);
+    background: linear-gradient(90deg, var(--c-primary) 0%, var(--c-primary-light) 50%, var(--c-accent) 100%);
     height: 100%;
     transition: width 0.5s ease;
     display: flex;
     align-items: center;
     justify-content: flex-end;
     padding-right: 12px;
-    color: var(--pwc-white);
+    color: var(--c-white);
     font-weight: 700;
     font-size: 0.85em;
     min-width: 40px;
@@ -260,18 +243,18 @@
     margin-bottom: 10px;
   }
   .benefit-card {
-    background: var(--pwc-white);
+    background: var(--c-white);
     padding: 18px 20px;
     border-radius: 2px;
-    border: 1px solid var(--pwc-grey-300);
-    border-top: 3px solid var(--pwc-orange-dark);
+    border: 1px solid var(--c-grey-300);
+    border-top: 3px solid var(--c-primary-dark);
     transition: box-shadow 0.15s;
   }
   .benefit-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-  .benefit-card h4 { color: var(--pwc-black); margin-bottom: 8px; font-size: 0.98em; font-weight: 700; }
-  .benefit-card p { font-size: 0.88em; color: var(--pwc-grey-700); line-height: 1.55; }
+  .benefit-card h4 { color: var(--c-black); margin-bottom: 8px; font-size: 0.98em; font-weight: 700; }
+  .benefit-card p { font-size: 0.88em; color: var(--c-grey-700); line-height: 1.55; }
   .filter-bar {
-    background: var(--pwc-white);
+    background: var(--c-white);
     padding: 16px 20px;
     border-radius: 2px;
     margin-bottom: 20px;
@@ -280,22 +263,22 @@
     flex-wrap: wrap;
     align-items: center;
     box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    border-left: 4px solid var(--pwc-orange);
+    border-left: 4px solid var(--c-primary);
   }
   .filter-bar input, .filter-bar select {
-    background: var(--pwc-white);
-    color: var(--pwc-grey-900);
-    border: 1px solid var(--pwc-grey-300);
+    background: var(--c-white);
+    color: var(--c-grey-900);
+    border: 1px solid var(--c-grey-300);
     padding: 9px 12px;
     border-radius: 2px;
     font-size: 0.92em;
     font-family: inherit;
   }
-  .filter-bar input:focus, .filter-bar select:focus { outline: none; border-color: var(--pwc-orange); }
+  .filter-bar input:focus, .filter-bar select:focus { outline: none; border-color: var(--c-primary); }
   .filter-bar input { flex: 1; min-width: 220px; }
   .filter-bar button {
-    background: var(--pwc-orange);
-    color: var(--pwc-white);
+    background: var(--c-primary);
+    color: var(--c-white);
     border: none;
     padding: 9px 18px;
     border-radius: 2px;
@@ -306,16 +289,16 @@
     transition: background 0.15s;
     letter-spacing: 0.3px;
   }
-  .filter-bar button:hover { background: var(--pwc-orange-dark); }
+  .filter-bar button:hover { background: var(--c-primary-dark); }
   .filter-bar button.secondary {
-    background: var(--pwc-white);
-    color: var(--pwc-grey-700);
-    border: 1px solid var(--pwc-grey-300);
+    background: var(--c-white);
+    color: var(--c-grey-700);
+    border: 1px solid var(--c-grey-300);
   }
   .filter-bar button.secondary:hover {
-    background: var(--pwc-grey-100);
-    border-color: var(--pwc-orange);
-    color: var(--pwc-orange);
+    background: var(--c-grey-100);
+    border-color: var(--c-primary);
+    color: var(--c-primary);
   }
   .badge {
     display: inline-block;
@@ -327,22 +310,22 @@
     letter-spacing: 0.3px;
     vertical-align: middle;
   }
-  .badge-dora { background: var(--pwc-red-dark); color: var(--pwc-white); }
-  .badge-eidas { background: var(--pwc-orange); color: var(--pwc-white); }
-  .badge-both { background: var(--pwc-pink); color: var(--pwc-white); }
+  .badge-dora { background: var(--c-alert-dark); color: var(--c-white); }
+  .badge-eidas { background: var(--c-primary); color: var(--c-white); }
+  .badge-both { background: var(--c-highlight); color: var(--c-white); }
   .matrix-wrapper {
     overflow-x: auto;
-    background: var(--pwc-white);
+    background: var(--c-white);
     border-radius: 2px;
     padding: 0;
-    border: 1px solid var(--pwc-grey-300);
+    border: 1px solid var(--c-grey-300);
   }
   table.matrix { width: 100%; border-collapse: collapse; font-size: 0.86em; }
-  table.matrix thead { background: var(--pwc-orange); position: sticky; top: 0; }
+  table.matrix thead { background: var(--c-primary); position: sticky; top: 0; }
   table.matrix th {
     padding: 13px 12px;
     text-align: left;
-    color: var(--pwc-white);
+    color: var(--c-white);
     font-weight: 700;
     border: none;
     cursor: pointer;
@@ -350,20 +333,20 @@
     letter-spacing: 0.3px;
     font-size: 0.92em;
   }
-  table.matrix th:hover { background: var(--pwc-orange-dark); }
+  table.matrix th:hover { background: var(--c-primary-dark); }
   table.matrix td {
     padding: 11px 12px;
-    border-bottom: 1px solid var(--pwc-grey-300);
+    border-bottom: 1px solid var(--c-grey-300);
     vertical-align: top;
     line-height: 1.45;
-    color: var(--pwc-grey-900);
+    color: var(--c-grey-900);
   }
-  table.matrix tr:nth-child(even) { background: var(--pwc-grey-100); }
+  table.matrix tr:nth-child(even) { background: var(--c-grey-100); }
   table.matrix tr:hover { background: #FFF4EC; }
-  table.matrix .col-eidas { color: var(--pwc-orange); font-weight: 700; white-space: nowrap; }
-  table.matrix .col-dora { color: var(--pwc-red-dark); font-weight: 700; white-space: nowrap; }
-  table.matrix .col-domain { color: var(--pwc-grey-700); font-size: 0.88em; font-weight: 600; }
-  table.matrix .col-topic { color: var(--pwc-grey-700); font-size: 0.85em; font-style: italic; }
+  table.matrix .col-eidas { color: var(--c-primary); font-weight: 700; white-space: nowrap; }
+  table.matrix .col-dora { color: var(--c-alert-dark); font-weight: 700; white-space: nowrap; }
+  table.matrix .col-domain { color: var(--c-grey-700); font-size: 0.88em; font-weight: 600; }
+  table.matrix .col-topic { color: var(--c-grey-700); font-size: 0.85em; font-style: italic; }
   .pill {
     display: inline-block;
     padding: 3px 10px;
@@ -372,22 +355,21 @@
     font-weight: 700;
     letter-spacing: 0.3px;
   }
-  .pill-high { background: var(--pwc-red); color: var(--pwc-white); }
-  .pill-medium { background: var(--pwc-yellow); color: var(--pwc-grey-900); }
-  .pill-low { background: var(--pwc-orange-dark); color: var(--pwc-white); }
+  .pill-high { background: var(--c-alert); color: var(--c-white); }
+  .pill-medium { background: var(--c-accent); color: var(--c-grey-900); }
+  .pill-low { background: var(--c-primary-dark); color: var(--c-white); }
   footer {
     text-align: center;
-    color: var(--pwc-grey-500);
+    color: var(--c-grey-500);
     padding: 24px;
     font-size: 0.82em;
     margin-top: 30px;
-    border-top: 1px solid var(--pwc-grey-300);
+    border-top: 1px solid var(--c-grey-300);
   }
-  footer strong { color: var(--pwc-orange); }
   ::-webkit-scrollbar { height: 10px; width: 10px; }
-  ::-webkit-scrollbar-track { background: var(--pwc-grey-100); }
-  ::-webkit-scrollbar-thumb { background: var(--pwc-grey-300); border-radius: 2px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--pwc-orange); }
+  ::-webkit-scrollbar-track { background: var(--c-grey-100); }
+  ::-webkit-scrollbar-thumb { background: var(--c-grey-300); border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--c-primary); }
 </style>
 </head>
 <body>
@@ -398,14 +380,6 @@
       <span class="validated-badge">✓ Validated</span>
     </h1>
     <p>Strategic overview for insurers — at the intersection of digital operational resilience and electronic identity</p>
-  </div>
-  <div class="pwc-logo">
-    <div class="pwc-logo-mark">
-      <div class="squares">
-        <span class="sq1"></span><span class="sq2"></span><span class="sq3"></span><span class="sq4"></span>
-      </div>
-      <div class="wordmark">pwc</div>
-    </div>
   </div>
 </header>
 
@@ -492,8 +466,8 @@
 <div class="tab-content" id="tab-matrix">
   <div class="section-card">
     <h2>Traceability Matrix — eIDAS ↔ DORA ↔ Control</h2>
-    <p style="margin-bottom:16px; line-height:1.6; color: var(--pwc-grey-700);">
-      Every control mapped to its underlying <strong style="color:var(--pwc-orange);">eIDAS 2.0</strong> article (with validated topic) and <strong style="color:var(--pwc-red-dark);">DORA</strong> article. Click column headers to sort.
+    <p style="margin-bottom:16px; line-height:1.6; color: var(--c-grey-700);">
+      Every control mapped to its underlying <strong style="color:var(--c-primary);">eIDAS 2.0</strong> article (with validated topic) and <strong style="color:var(--c-alert-dark);">DORA</strong> article. Click column headers to sort.
     </p>
     <div class="matrix-wrapper">
       <table class="matrix" id="matrix-table">
@@ -514,7 +488,7 @@
 
 <div class="tab-content" id="tab-benefits"><div class="section-card">
   <h2>Efficiency &amp; Benefit-Maximisation Levers</h2>
-  <p style="margin-bottom:20px; line-height:1.6; color: var(--pwc-grey-700);">Consolidate overlapping obligations into unified controls, frameworks and tooling.</p>
+  <p style="margin-bottom:20px; line-height:1.6; color: var(--c-grey-700);">Consolidate overlapping obligations into unified controls, frameworks and tooling.</p>
   <h3>I. Integrated Governance &amp; Data Management</h3><div class="benefit-grid" id="benefits-1"></div>
   <h3>II. Streamlined Processes &amp; Automation</h3><div class="benefit-grid" id="benefits-2"></div>
   <h3>III. Enhanced Security &amp; Data Protection</h3><div class="benefit-grid" id="benefits-3"></div>
@@ -522,7 +496,7 @@
 </div></div>
 
 <footer>
-  DORA &amp; eIDAS 2.0 Compliance Dashboard · Prototype prepared by <strong>PwC</strong> · eIDAS references validated against source document · Progress saved locally in your browser
+  DORA &amp; eIDAS 2.0 Compliance Dashboard · eIDAS references validated against source document · Progress saved locally in your browser
 </footer>
 
 <script>
@@ -938,7 +912,7 @@ function exportProgress() {
       owner:s.owner||'', due_date:s.due||'', completed:!!s.done});
   });
   const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
-  triggerDownload(blob, 'pwc-dora-eidas-progress-' + new Date().toISOString().split('T')[0] + '.json');
+  triggerDownload(blob, 'dora-eidas-progress-' + new Date().toISOString().split('T')[0] + '.json');
 }
 function exportCSV() {
   const headers = ['#','Task','Domain','eIDAS Article','eIDAS Topic','DORA Article','Priority','Owner','Due Date','Completed'];
@@ -952,7 +926,7 @@ function exportCSV() {
   });
   const csv = rows.map(r => r.join(',')).join('\n');
   const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-  triggerDownload(blob, 'pwc-dora-eidas-traceability-' + new Date().toISOString().split('T')[0] + '.csv');
+  triggerDownload(blob, 'dora-eidas-traceability-' + new Date().toISOString().split('T')[0] + '.csv');
 }
 function triggerDownload(blob, filename) {
   const url = URL.createObjectURL(blob);
