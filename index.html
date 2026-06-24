@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DORA & eIDAS 2.0 Compliance Dashboard — Validated</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #e2e8f0;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  header {
+    background: linear-gradient(90deg, #d04a02 0%, #e87722 100%);
+    padding: 30px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+  header h1 { font-size: 2.2em; color: white; margin-bottom: 8px; }
+  header p { color: rgba(255,255,255,0.9); font-size: 1.05em; }
+  .validated-badge {
+    display: inline-block;
+    background: #10b981;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.75em;
+    font-weight: bold;
+    margin-left: 10px;
+    vertical-align: middle;
+  }
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px;
+    margin-bottom: 30px;
+  }
+  .kpi-card {
+    background: #1e293b;
+    border-left: 4px solid #e87722;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+  }
+  .kpi-card:hover { transform: translateY(-3px); }
+  .kpi-card h3 { color: #94a3b8; font-size: 0.8em; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .kpi-card .value { font-size: 2em; font-weight: bold; color: #e87722; }
+  .kpi-card .sub { font-size: 0.8em; color: #94a3b8; margin-top: 4px; }
+  .tabs {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;
+    border-bottom: 2px solid #334155;
+  }
+  .tab-btn {
+    background: #1e293b; color: #cbd5e1; border: none;
+    padding: 12px 20px; cursor: pointer; border-radius: 8px 8px 0 0;
+    font-size: 0.95em; font-weight: 500; transition: all 0.2s;
+    border-bottom: 3px solid transparent;
+  }
+  .tab-btn:hover { background: #334155; }
+  .tab-btn.active { background: #e87722; color: white; border-bottom-color: #d04a02; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; animation: fadeIn 0.3s; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .section-card {
+    background: #1e293b; padding: 25px; border-radius: 12px;
+    margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  .section-card h2 { color: #e87722; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #334155; font-size: 1.4em; }
+  .section-card h3 { color: #fbbf24; margin: 18px 0 10px; font-size: 1.1em; }
+  .task-list { list-style: none; }
+  .task-item {
+    background: #0f172a; margin: 10px 0; padding: 14px 16px;
+    border-radius: 8px; border-left: 3px solid #475569; transition: all 0.2s;
+  }
+  .task-item:hover { border-left-color: #e87722; background: #1a2638; }
+  .task-item.completed { opacity: 0.6; border-left-color: #10b981; }
+  .task-item.completed .task-label { text-decoration: line-through; }
+  .task-row-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+  .task-row-top input[type="checkbox"] { margin-top: 4px; width: 18px; height: 18px; accent-color: #e87722; cursor: pointer; flex-shrink: 0; }
+  .task-label { flex: 1; line-height: 1.5; font-size: 0.95em; cursor: pointer; }
+  .task-meta {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 8px; margin-top: 8px; padding-left: 30px;
+  }
+  .meta-field { display: flex; flex-direction: column; gap: 3px; }
+  .meta-field label { font-size: 0.7em; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
+  .meta-field input, .meta-field select {
+    background: #1e293b; color: #e2e8f0; border: 1px solid #334155;
+    padding: 5px 8px; border-radius: 4px; font-size: 0.85em;
+  }
+  .meta-field input:focus, .meta-field select:focus { outline: none; border-color: #e87722; }
+  .priority-high { border-left: 3px solid #ef4444 !important; }
+  .priority-medium { border-left: 3px solid #fbbf24 !important; }
+  .priority-low { border-left: 3px solid #10b981 !important; }
+  .article-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; padding-left: 30px; }
+  .article-tag { font-size: 0.72em; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+  .tag-dora { background: rgba(59,130,246,0.2); color: #60a5fa; border: 1px solid #3b82f6; }
+  .tag-eidas { background: rgba(139,92,246,0.2); color: #a78bfa; border: 1px solid #8b5cf6; }
+  .tag-topic { background: rgba(16,185,129,0.15); color: #6ee7b7; border: 1px solid #10b981; font-style: italic; }
+  .progress-bar-container { background: #0f172a; border-radius: 20px; height: 28px; overflow: hidden; margin: 10px 0; }
+  .progress-bar {
+    background: linear-gradient(90deg, #d04a02, #e87722, #fbbf24);
+    height: 100%; transition: width 0.5s ease; display: flex;
+    align-items: center; justify-content: flex-end; padding-right: 12px;
+    color: white; font-weight: bold; font-size: 0.85em; min-width: 40px;
+  }
+  .benefit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
+  .benefit-card { background: #0f172a; padding: 18px; border-radius: 8px; border-top: 3px solid #10b981; }
+  .benefit-card h4 { color: #10b981; margin-bottom: 8px; font-size: 1em; }
+  .benefit-card p { font-size: 0.9em; color: #cbd5e1; line-height: 1.5; }
+  .filter-bar {
+    background: #1e293b; padding: 15px; border-radius: 10px;
+    margin-bottom: 20px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+  }
+  .filter-bar input, .filter-bar select {
+    background: #0f172a; color: #e2e8f0; border: 1px solid #334155;
+    padding: 8px 12px; border-radius: 6px; font-size: 0.95em;
+  }
+  .filter-bar input { flex: 1; min-width: 200px; }
+  .filter-bar button {
+    background: #e87722; color: white; border: none;
+    padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 500;
+  }
+  .filter-bar button:hover { background: #d04a02; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; font-weight: bold; margin-left: 8px; }
+  .badge-dora { background: #3b82f6; color: white; }
+  .badge-eidas { background: #8b5cf6; color: white; }
+  .badge-both { background: #ec4899; color: white; }
+  .matrix-wrapper { overflow-x: auto; background: #1e293b; border-radius: 12px; padding: 20px; }
+  table.matrix { width: 100%; border-collapse: collapse; font-size: 0.88em; }
+  table.matrix thead { background: linear-gradient(90deg, #d04a02, #e87722); position: sticky; top: 0; }
+  table.matrix th {
+    padding: 12px 10px; text-align: left; color: white; font-weight: 600;
+    border: 1px solid #334155; cursor: pointer; user-select: none;
+  }
+  table.matrix th:hover { background: rgba(0,0,0,0.2); }
+  table.matrix td { padding: 10px; border: 1px solid #334155; vertical-align: top; line-height: 1.4; }
+  table.matrix tr:nth-child(even) { background: #0f172a; }
+  table.matrix tr:hover { background: #1a2638; }
+  table.matrix .col-eidas { color: #a78bfa; font-weight: 600; white-space: nowrap; }
+  table.matrix .col-dora { color: #60a5fa; font-weight: 600; white-space: nowrap; }
+  table.matrix .col-domain { color: #fbbf24; font-size: 0.85em; }
+  table.matrix .col-topic { color: #6ee7b7; font-size: 0.85em; font-style: italic; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; font-weight: bold; }
+  .pill-high { background: #ef4444; color: white; }
+  .pill-medium { background: #fbbf24; color: #1f2937; }
+  .pill-low { background: #10b981; color: white; }
+  .changelog {
+    background: rgba(16,185,129,0.1); border-left: 4px solid #10b981;
+    padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;
+  }
+  .changelog h3 { color: #10b981; margin-bottom: 10px; }
+  .changelog ul { padding-left: 20px; line-height: 1.7; font-size: 0.92em; }
+  footer { text-align: center; color: #64748b; padding: 20px; font-size: 0.85em; margin-top: 30px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🛡️ DORA & eIDAS 2.0 Compliance Dashboard <span class="validated-badge">✓ Validated against eIDAS PDF</span></h1>
+  <p>Strategic overview for insurers — Article references cross-checked against eIDAS_text_analysis.pdf</p>
+</header>
+
+<div class="kpi-grid">
+  <div class="kpi-card"><h3>Total Tasks</h3><div class="value" id="kpi-total">0</div><div class="sub">Across 6 domains</div></div>
+  <div class="kpi-card"><h3>Completed</h3><div class="value" id="kpi-completed" style="color:#10b981;">0</div><div class="sub">Tasks marked done</div></div>
+  <div class="kpi-card"><h3>Progress</h3><div class="value" id="kpi-percent">0%</div><div class="sub">Completion rate</div></div>
+  <div class="kpi-card"><h3>High Priority Open</h3><div class="value" id="kpi-high" style="color:#ef4444;">0</div><div class="sub">Need attention</div></div>
+  <div class="kpi-card"><h3>Overdue</h3><div class="value" id="kpi-overdue" style="color:#ef4444;">0</div><div class="sub">Past due date</div></div>
+  <div class="kpi-card"><h3>Efficiency Levers</h3><div class="value" style="color:#fbbf24;">90+</div><div class="sub">Synergy opportunities</div></div>
+</div>
+
+<div class="section-card">
+  <h2>📊 Overall Compliance Progress</h2>
+  <div class="progress-bar-container"><div class="progress-bar" id="overall-progress" style="width: 0%;">0%</div></div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab(event,'tab-overview')">Overview</button>
+  <button class="tab-btn" onclick="switchTab(event,'tab-tprm')">I. TPRM & Wallet</button>
+  <button class="tab-btn" onclick="switchTab(event,'tab-code')">II. Open-Source Code</button>
+  <button class="tab-btn" onclick="switchTab(event,'tab-data')">III. Data & Security</button>
+  <button class="tab-btn" onclick="switchTab(event,'tab-incident')">IV. Incident & Resilience</button>
+  <button class="tab-btn" onclick="switchTab(event,'tab-ops')">V. Operational Security</button>
+  <button class="tab-btn" onclick="switchTab(event,'tab-regulatory')">VI. Regulatory Alignment</button>
+  <button class="tab-btn" onclick="switchTab(event,'tab-matrix')">🔗 Traceability Matrix</button>
+  <button class="tab-btn" onclick="switchTab(event,'tab-benefits')">💡 Efficiency Benefits</button>
+</div>
+
+<div class="filter-bar">
+  <input type="text" id="search-input" placeholder="🔍 Search tasks, articles, topics, owners..." oninput="filterAll()">
+  <select id="status-filter" onchange="filterAll()">
+    <option value="all">All statuses</option><option value="pending">Pending</option><option value="completed">Completed</option>
+  </select>
+  <select id="priority-filter" onchange="filterAll()">
+    <option value="all">All priorities</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option>
+  </select>
+  <button onclick="resetAll()">Reset all</button>
+  <button onclick="exportProgress()">Export JSON</button>
+  <button onclick="exportCSV()">Export CSV</button>
+</div>
+
+<div class="tab-content active" id="tab-overview">
+  <div class="section-card">
+    <h2>🎯 Strategic Overview</h2>
+    <p style="line-height:1.7; margin-bottom:15px;">
+      The intersection of <strong style="color:#e87722;">DORA</strong> and <strong style="color:#e87722;">eIDAS 2.0</strong> creates both regulatory burden and strategic opportunity. This dashboard guides insurers through six compliance domains and traces each control back to its underlying eIDAS and DORA articles.
+    </p>
+
+    <div class="changelog">
+      <h3>✅ Validation against eIDAS_text_analysis.pdf — corrections applied</h3>
+      <ul>
+        <li><strong>Art. 19a added</strong> — 24-hour QTSP breach notification SLA is correctly mapped to Art. 19a (not Art. 19).</li>
+        <li><strong>Art. 39 corrected</strong> — Art. 39 refers to qualified electronic time stamps (QTS). HSM seal-creation keys are now correctly mapped to Art. 29 / 29a (QSCD & QTSP key management).</li>
+        <li><strong>Art. 46a added</strong> — QERDS (Qualified Electronic Registered Delivery Services) is correctly under Art. 46a, not 43/44 (which cover seals).</li>
+        <li><strong>Art. 46b refined</strong> — now correctly cited only for electronic-document non-discrimination, not QTSP conformity (which is Art. 20/24).</li>
+        <li><strong>Topic labels added</strong> — every article reference now shows its official topic (e.g., "Wallets", "Trust lists", "QWACs") so reviewers can verify mappings at a glance.</li>
+        <li>All other article references in the previous version were confirmed correct against the PDF.</li>
+      </ul>
+    </div>
+
+    <h3>How to use this dashboard</h3>
+    <ul style="line-height:1.8; padding-left:20px;">
+      <li>✅ Tick off compliance tasks — progress auto-saves in your browser.</li>
+      <li>👤 Assign an <strong>owner</strong>, <strong>due date</strong> and <strong>priority</strong> for each task.</li>
+      <li>🔗 Open the <strong>Traceability Matrix</strong> to see control ↔ eIDAS ↔ DORA mappings with topic labels.</li>
+      <li>📤 Export progress as JSON or a traceability CSV.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="tab-content" id="tab-tprm"><div class="section-card"><h2>I. ICT Third-Party Risk Management & Wallet Integration</h2>
+  <h3>1. Identify and Document Dependencies <span class="badge badge-both">DORA + eIDAS</span></h3><ul class="task-list" id="list-tprm-1"></ul>
+  <h3>2. Risk Assessment and Management <span class="badge badge-dora">DORA</span></h3><ul class="task-list" id="list-tprm-2"></ul>
+</div></div>
+
+<div class="tab-content" id="tab-code"><div class="section-card"><h2>II. Open-Source Code Management</h2>
+  <h3>1. Change Management <span class="badge badge-dora">DORA</span></h3><ul class="task-list" id="list-code-1"></ul>
+  <h3>2. Vulnerability and Patch Management <span class="badge badge-both">DORA + eIDAS</span></h3><ul class="task-list" id="list-code-2"></ul>
+</div></div>
+
+<div class="tab-content" id="tab-data"><div class="section-card"><h2>III. Data Handling and Security</h2>
+  <h3>1. Traceability and Logging <span class="badge badge-eidas">eIDAS</span></h3><ul class="task-list" id="list-data-1"></ul>
+  <h3>2. Data Protection <span class="badge badge-both">DORA + eIDAS</span></h3><ul class="task-list" id="list-data-2"></ul>
+  <h3>3. Authentication and Key Management <span class="badge badge-both">DORA + eIDAS</span></h3><ul class="task-list" id="list-data-3"></ul>
+</div></div>
+
+<div class="tab-content" id="tab-incident"><div class="section-card"><h2>IV. Incident Management and Resilience</h2>
+  <h3>1. Backup and Recovery <span class="badge badge-dora">DORA</span></h3><ul class="task-list" id="list-inc-1"></ul>
+  <h3>2. GDPR and DORA Reporting <span class="badge badge-both">DORA + GDPR</span></h3><ul class="task-list" id="list-inc-2"></ul>
+  <h3>3. Signature and Seal Validation <span class="badge badge-eidas">eIDAS</span></h3><ul class="task-list" id="list-inc-3"></ul>
+  <h3>4. Data Uploads and Portability <span class="badge badge-dora">DORA</span></h3><ul class="task-list" id="list-inc-4"></ul>
+</div></div>
+
+<div class="tab-content" id="tab-ops"><div class="section-card"><h2>V. Operational Security and Compliance</h2>
+  <h3>1. API Management <span class="badge badge-dora">DORA</span></h3><ul class="task-list" id="list-ops-1"></ul>
+  <h3>2. Access Control <span class="badge badge-dora">DORA</span></h3><ul class="task-list" id="list-ops-2"></ul>
+  <h3>3. Strong Authentication <span class="badge badge-both">DORA + eIDAS</span></h3><ul class="task-list" id="list-ops-3"></ul>
+  <h3>4. Data Combination and Breach Notification <span class="badge badge-both">DORA + GDPR</span></h3><ul class="task-list" id="list-ops-4"></ul>
+  <h3>5. Registration & Data Minimization <span class="badge badge-eidas">eIDAS</span></h3><ul class="task-list" id="list-ops-5"></ul>
+  <h3>6. Intermediaries and Pseudonyms <span class="badge badge-both">DORA + eIDAS</span></h3><ul class="task-list" id="list-ops-6"></ul>
+</div></div>
+
+<div class="tab-content" id="tab-regulatory"><div class="section-card"><h2>VI. Regulatory Alignment and Monitoring</h2>
+  <h3>Cross-Cutting Regulatory Obligations <span class="badge badge-both">DORA + eIDAS</span></h3><ul class="task-list" id="list-reg-1"></ul>
+  <h3>QTSP and Trust Services <span class="badge badge-eidas">eIDAS</span></h3><ul class="task-list" id="list-reg-2"></ul>
+</div></div>
+
+<div class="tab-content" id="tab-matrix">
+  <div class="section-card">
+    <h2>🔗 Traceability Matrix — eIDAS ↔ DORA ↔ Control</h2>
+    <p style="margin-bottom:15px; line-height:1.6;">
+      Every control mapped to its underlying <strong style="color:#a78bfa;">eIDAS 2.0</strong> article (with validated topic) and <strong style="color:#60a5fa;">DORA</strong> article. Click column headers to sort.
+    </p>
+    <div class="matrix-wrapper">
+      <table class="matrix" id="matrix-table">
+        <thead><tr>
+          <th onclick="sortMatrix(0)">#</th>
+          <th onclick="sortMatrix(1)">Control / Activity</th>
+          <th onclick="sortMatrix(2)">Domain</th>
+          <th onclick="sortMatrix(3)">eIDAS Article</th>
+          <th onclick="sortMatrix(4)">eIDAS Topic</th>
+          <th onclick="sortMatrix(5)">DORA Article</th>
+          <th onclick="sortMatrix(6)">Priority</th>
+        </tr></thead>
+        <tbody id="matrix-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="tab-content" id="tab-benefits"><div class="section-card">
+  <h2>💡 Efficiency & Benefit-Maximisation Levers</h2>
+  <p style="margin-bottom:20px; line-height:1.6;">Consolidate overlapping obligations into unified controls, frameworks and tooling.</p>
+  <h3>I. Integrated Governance & Data Management</h3><div class="benefit-grid" id="benefits-1"></div>
+  <h3>II. Streamlined Processes & Automation</h3><div class="benefit-grid" id="benefits-2"></div>
+  <h3>III. Enhanced Security & Data Protection</h3><div class="benefit-grid" id="benefits-3"></div>
+  <h3>IV. Integrated Incident & Compliance Response</h3><div class="benefit-grid" id="benefits-4"></div>
+</div></div>
+
+<footer>DORA & eIDAS 2.0 Compliance Dashboard · eIDAS references validated against eIDAS_text_analysis.pdf · Progress saved in your browser</footer>
+
+<script>
+// eIDAS topic dictionary validated from PDF
+const EIDAS_TOPICS = {
+  "5a": "EU Digital Identity Wallets",
+  "5b": "Relying Parties registration",
+  "5c": "Wallet certification",
+  "5d": "Published wallet list",
+  "5f": "Cross-border wallet acceptance",
+  "8": "eID Means / LoA",
+  "13": "TSP liability",
+  "14": "Third-country trust services",
+  "19": "TSP security (TOMs)",
+  "19a": "QTSP 24-h breach notification",
+  "20": "Supervisory body / QTSP conformity",
+  "22": "Trust lists",
+  "24": "QTSP identity proofing & verification",
+  "25": "Legal effect of e-signatures",
+  "29": "QSCD requirements",
+  "29a": "QTSP key management",
+  "30": "QSCD certification",
+  "32": "QES validation requirements",
+  "32a": "QES validation procedures",
+  "34": "QES validation service",
+  "39": "Qualified time stamps (QTS)",
+  "41": "Legal effect of time stamps",
+  "42": "Qualified electronic seals",
+  "43": "Legal effect of seals",
+  "44": "Q-Seal validation",
+  "45": "QWACs / website authentication",
+  "45d": "Attribute verification against authentic sources",
+  "45e": "EAA issuance to Wallets",
+  "45l": "Qualified electronic ledgers (QELs)",
+  "46a": "QERDS",
+  "46b": "Electronic documents non-discrimination",
+  "47": "Commission delegated acts",
+  "48": "Committee procedure",
+  "51": "Transitional measures"
+};
+
+function topicFor(refs) {
+  // refs string like "Art. 5a, 22" — return concatenated topics
+  const tokens = refs.replace(/Art\.\s*/g,'').split(/[,;]/).map(s=>s.trim()).filter(Boolean);
+  const topics = tokens.map(t => EIDAS_TOPICS[t]).filter(Boolean);
+  return topics.length ? topics.join(' · ') : '—';
+}
+
+// ============== TASK DATA (validated eIDAS references) ==============
+const tasks = {
+  "list-tprm-1": [
+    ["Identify and document all wallet ecosystem components as ICT third-parties (Wallet Providers, PID Issuers, QEAA Issuers, QTSPs, national RP registers).", "Art. 5a, 5b", "Art. 8(4), 28", "high", "I. TPRM"],
+    ["Classify each dependency to determine if it supports a Critical or Important Function (CIF).", "Art. 5a", "Art. 8(4)", "high", "I. TPRM"],
+    ["Document the provision model for each wallet used (state-direct, state-mandated/private, or private recognized).", "Art. 5a", "Art. 28", "medium", "I. TPRM"],
+    ["Include private wallet operators (models b and c) in the ICT TPRM framework.", "Art. 5a", "Art. 28, 29", "high", "I. TPRM"],
+    ["Record all wallet-related providers in the DORA Register of Information.", "Art. 5a", "Art. 28(3), Impl. Reg. 2024/2956", "high", "I. TPRM"],
+    ["Document interconnections between internal systems and wallet services (data flows, interfaces, trust anchors).", "Art. 5a, 22", "Art. 8(4), 8(6)", "medium", "I. TPRM"],
+    ["Document that state-direct wallets are not designated as CTPPs under DORA Art. 31(8)(ii).", "Art. 5a", "Art. 31(8)(ii)", "low", "I. TPRM"]
+  ],
+  "list-tprm-2": [
+    ["Extend DORA Art. 6(1) risk assessment to all wallet providers.", "Art. 5a", "Art. 6(1)", "high", "I. TPRM"],
+    ["Assess concentration risk for private wallet providers.", "Art. 5a", "Art. 29", "high", "I. TPRM"],
+    ["Develop an exit strategy and substitutability plan for wallets.", "Art. 5a", "Art. 28(8)", "high", "I. TPRM"],
+    ["Implement BCPs, fallback identification and manual processes for state-direct wallet outages.", "Art. 5a", "Art. 11, 12", "medium", "I. TPRM"],
+    ["Assess private wallet providers for potential CTPP designation; prepare for heightened requirements.", "Art. 5a", "Art. 31", "medium", "I. TPRM"],
+    ["Document limited contractual influence over state wallets; compensate with proprietary monitoring.", "Art. 5a", "Art. 28(2), 30", "low", "I. TPRM"]
+  ],
+  "list-code-1": [
+    ["Apply full DORA-compliant change management to all integrated open-source wallet code.", "Art. 5c", "Art. 8, 9", "high", "II. Code"],
+    ["Include dependency libraries and cryptographic modules in the change process.", "Art. 5c", "Art. 8, 9", "medium", "II. Code"],
+    ["Conduct pre-production verification (functional, security, eIDAS-ARF conformity).", "Art. 5c", "Art. 25", "high", "II. Code"],
+    ["Maintain a complete audit trail for each change.", "Art. 24", "Art. 8, 13", "medium", "II. Code"]
+  ],
+  "list-code-2": [
+    ["Establish a patch management policy for wallet-related code.", "Art. 5c, 19", "Art. 9(4)(e)", "high", "II. Code"],
+    ["Implement continuous CVE monitoring for all wallet components and dependencies.", "Art. 19", "Art. 10", "high", "II. Code"],
+    ["Define SLAs for patch deployment based on severity.", "Art. 19", "Art. 9(4)(e)", "medium", "II. Code"],
+    ["Establish automated vulnerability scanning in build and runtime environments.", "Art. 5c, 19", "Art. 25", "medium", "II. Code"],
+    ["Document patch history for DORA audits.", "Art. 24", "Art. 13", "low", "II. Code"],
+    ["Maintain an SBOM for each production wallet version.", "Art. 5c", "Art. 8(4)", "high", "II. Code"],
+    ["Conduct threat modeling for wallet integrations.", "Art. 19", "Art. 8(2)", "medium", "II. Code"],
+    ["Perform annual risk scenario reviews per DORA Art. 8(2).", "Art. 19", "Art. 8(2)", "medium", "II. Code"],
+    ["Include all wallet integration points in the ICT asset inventory.", "Art. 5a", "Art. 8(4)", "high", "II. Code"],
+    ["Incorporate open-source analyses and source code reviews into the DORA resilience testing program.", "Art. 5c", "Art. 24, 25", "medium", "II. Code"],
+    ["Plan vulnerability assessments and penetration tests for wallet interfaces.", "Art. 5c, 19", "Art. 25, 26", "high", "II. Code"],
+    ["Execute compatibility and end-to-end tests across multiple wallet implementations.", "Art. 5c", "Art. 25", "medium", "II. Code"]
+  ],
+  "list-data-1": [
+    ["Include every system involved in a wallet interaction in the ICT asset inventory.", "Art. 24", "Art. 8(4)", "high", "III. Data"],
+    ["Manage wallet audit data as a separate information asset category.", "Art. 24", "Art. 8(4), 12", "medium", "III. Data"],
+    ["Map interdependencies between these systems.", "Art. 5a", "Art. 8(6)", "medium", "III. Data"],
+    ["Ensure eIDAS user traceability is supported by auditable logs meeting DORA audit requirements.", "Art. 24, 45l", "Art. 13", "high", "III. Data"],
+    ["Integrate wallet audit trails into regulatory reporting structures (CSDs, CCPs, TRs).", "Art. 24", "Art. 17, 19", "low", "III. Data"]
+  ],
+  "list-data-2": [
+    ["Include systems receiving wallet identity data in the ICT security framework.", "Art. 19", "Art. 9", "high", "III. Data"],
+    ["Implement encryption for data at rest, in use, and in transit.", "Art. 19", "Art. 9(2), 9(4)(d)", "high", "III. Data"],
+    ["Implement access logging for all wallet-received data, correlated with wallet session ID.", "Art. 24", "Art. 9(4)(c), 13", "medium", "III. Data"],
+    ["Verify data authenticity via cryptographic verification of wallet signatures and trust list consultation.", "Art. 22, 25, 32", "Art. 9(3)(c)", "high", "III. Data"],
+    ["Secure data integrity using hashing and tamper-evident logs.", "Art. 19", "Art. 9(2), 9(3)(b)", "medium", "III. Data"],
+    ["Guarantee availability of receiving systems through BCM measures.", "Art. 19", "Art. 11, 12", "medium", "III. Data"],
+    ["Secure API endpoints for selectively disclosed attributes with TLS 1.3, mTLS, integrity checks.", "Art. 45", "Art. 9(3)(a), 9(4)(b)", "high", "III. Data"],
+    ["Implement anti-tampering and replay-attack protection.", "Art. 19", "Art. 9(3)(b)", "medium", "III. Data"],
+    ["Technically enforce data minimization (store only requested attributes).", "Art. 5a, 5b", "Art. 9(3)(c)", "high", "III. Data"],
+    ["Treat data linked to wallet pseudonyms as fully identified customer data.", "Art. 5b", "Art. 9(3)(c)", "medium", "III. Data"],
+    ["Configure CRM/analytics to store pseudonym data encrypted and access-controlled.", "Art. 5b", "Art. 9(4)(c)", "medium", "III. Data"],
+    ["Document the linking logic between pseudonyms and identified profiles.", "Art. 5b", "Art. 8(4)", "low", "III. Data"]
+  ],
+  "list-data-3": [
+    ["Provide a corporate wallet meeting eIDAS LoA 'High' for B2B interactions.", "Art. 5a, 8", "Art. 9(4)(d)", "high", "III. Data"],
+    ["Store cryptographic keys in HSMs (rotation + access controls).", "Art. 29, 29a", "Art. 9(4)(d)", "high", "III. Data"],
+    ["Implement strong authentication based on recognized standards.", "Art. 8", "Art. 9(4)(d)", "high", "III. Data"],
+    ["Classify wallet-to-wallet channels as ICT assets; include in risk assessment.", "Art. 5a", "Art. 8(4), 9(4)(b)", "medium", "III. Data"],
+    ["Conduct data classification for exchanged content; assign encryption strengths.", "Art. 19", "Art. 9(2)", "medium", "III. Data"],
+    ["Include B2B wallet attack vectors in DORA Art. 25 TLPT tests.", "Art. 5c", "Art. 25, 26, 27", "medium", "III. Data"]
+  ],
+  "list-inc-1": [
+    ["Establish a backup policy covering wallet-related data exchange logs.", "Art. 24", "Art. 12", "high", "IV. Incident"],
+    ["Document, implement and regularly test restoration/recovery procedures.", "Art. 24", "Art. 11, 12", "high", "IV. Incident"],
+    ["Synchronize internal logs with wallet displays and implement reconciliation.", "Art. 24, 45l", "Art. 12, 13", "medium", "IV. Incident"],
+    ["Integrate logging with MiFID II and Solvency II audit trail requirements.", "Art. 24", "Art. 13", "low", "IV. Incident"]
+  ],
+  "list-inc-2": [
+    ["Implement automated intake channel for wallet-originated GDPR Art. 17 erasure requests.", "Art. 5a", "Art. 17", "high", "IV. Incident"],
+    ["Establish a communication plan for mass-erasure scenarios.", "Art. 5a", "Art. 14, 17", "medium", "IV. Incident"],
+    ["Integrate ICT-related customer complaints into the incident management framework.", "Art. 19", "Art. 17", "medium", "IV. Incident"],
+    ["Anchor the GDPR one-month deadline as a monitored SLA.", "—", "Art. 17", "medium", "IV. Incident"],
+    ["Monitor incoming DPA notifications linked to wallet interactions.", "Art. 19a", "Art. 17", "medium", "IV. Incident"],
+    ["Conduct root cause analysis to distinguish misconfiguration, attack, or legitimate requests.", "Art. 19", "Art. 13(2), 17", "medium", "IV. Incident"],
+    ["Integrate wallet-DPA reports into DORA incident reporting when thresholds breached.", "Art. 19a", "Art. 17, 18, 19", "high", "IV. Incident"]
+  ],
+  "list-inc-3": [
+    ["Integrate a QES validation service with EU Trusted Lists (LOTL).", "Art. 22, 32, 32a, 34", "Art. 9", "high", "IV. Incident"],
+    ["Protect seal-creation keys via HSM (FIPS 140-2 L3+ / CC EAL4+).", "Art. 29, 29a", "Art. 9(4)(d)", "high", "IV. Incident"],
+    ["Classify the wallet signature channel as an ICT asset.", "Art. 25, 42", "Art. 8(4)", "medium", "IV. Incident"],
+    ["Extend penetration testing (DORA Art. 25/TLPT) to this interface.", "Art. 5c", "Art. 25, 26", "medium", "IV. Incident"],
+    ["Implement document integrity verification via hash checks and LTV/PAdES-LTA.", "Art. 32, 34", "Art. 9(2)", "medium", "IV. Incident"],
+    ["Anchor legal equivalence of QES to handwritten signatures in internal processes.", "Art. 25", "—", "low", "IV. Incident"],
+    ["Apply qualified timestamping per eIDAS Art. 39 / 41.", "Art. 39, 41", "Art. 19(4)", "medium", "IV. Incident"]
+  ],
+  "list-inc-4": [
+    ["Ensure 'wallet upload' uses a secure transfer channel meeting DORA Art. 9(3)(a).", "Art. 5a", "Art. 9(3)(a)", "high", "IV. Incident"],
+    ["Encrypt the upload channel, integrity-check it, and log it for audit.", "Art. 19", "Art. 9(2), 9(3)", "high", "IV. Incident"],
+    ["Authenticate the uploading user with strong customer authentication.", "Art. 8", "Art. 9(4)(d)", "high", "IV. Incident"],
+    ["Include malware scanning and content validation before ingestion.", "Art. 19", "Art. 9, 10", "medium", "IV. Incident"],
+    ["Document data lineage from wallet export to internal storage.", "Art. 24", "Art. 8(4)", "low", "IV. Incident"],
+    ["Ensure ICT third-party contracts address data portability per DORA Art. 30(2)(c).", "Art. 5a", "Art. 30(2)(c)", "medium", "IV. Incident"],
+    ["Support standardized export formats; include portability scenarios in vendor exit clauses.", "Art. 5a", "Art. 28(8), 30", "medium", "IV. Incident"]
+  ],
+  "list-ops-1": [
+    ["Inventory every wallet-related API as an ICT asset.", "Art. 5a", "Art. 8(4)", "high", "V. Ops"],
+    ["Map interdependencies between wallet-facing assets and core systems.", "Art. 5a", "Art. 8(6)", "medium", "V. Ops"],
+    ["Network-segment wallet-facing endpoints from core systems.", "Art. 19", "Art. 9(4)(b)", "high", "V. Ops"],
+    ["Implement automated isolation mechanisms at the wallet-API boundary.", "Art. 19", "Art. 9(4)(b), 10", "medium", "V. Ops"],
+    ["Deploy defense-in-depth (firewalls, micro-segmentation, zero-trust, anomaly detection, rate limiting).", "Art. 19", "Art. 9, 10", "high", "V. Ops"]
+  ],
+  "list-ops-2": [
+    ["Subject wallet-received identity data to strict internal access controls.", "Art. 19", "Art. 9(4)(c)", "high", "V. Ops"],
+    ["Enforce access controls via RBAC or ABAC.", "Art. 19", "Art. 9(4)(c)", "medium", "V. Ops"],
+    ["Preserve selective disclosure principles internally.", "Art. 5a, 5b", "Art. 9(4)(c)", "medium", "V. Ops"],
+    ["Log access events for audit and breach investigation.", "Art. 24", "Art. 13, 17", "medium", "V. Ops"]
+  ],
+  "list-ops-3": [
+    ["Protect cryptographic keys for wallet-based onboarding (HSM FIPS 140-2 L3+ / CC EAL4+).", "Art. 29, 29a", "Art. 9(4)(d)", "high", "V. Ops"],
+    ["Classify onboarding channel as a critical ICT asset; test under DORA Art. 25.", "Art. 5a", "Art. 8(4), 25", "high", "V. Ops"],
+    ["Protect wallet-to-wallet B2B channels under DORA Art. 9(4)(b).", "Art. 5a", "Art. 9(4)(b)", "medium", "V. Ops"],
+    ["Recognize eIDAS LoA High as a 'strong authentication mechanism' under DORA Art. 9(4)(d).", "Art. 8", "Art. 9(4)(d)", "medium", "V. Ops"],
+    ["Treat a wallet breach affecting customers as ICT-related incident triggering DORA Art. 17.", "Art. 19a", "Art. 17", "high", "V. Ops"],
+    ["Include LoA High authentication chain in resilience testing program.", "Art. 8", "Art. 25(1)", "medium", "V. Ops"],
+    ["Include 'validation outage' BCP scenario for state-operated wallet validation services.", "Art. 5a, 32", "Art. 11(4)", "medium", "V. Ops"],
+    ["Ensure contracts with private wallet operators require ICT incident assistance.", "Art. 5a", "Art. 30(2)(f)", "medium", "V. Ops"]
+  ],
+  "list-ops-4": [
+    ["Prevent unauthorized combination of wallet data with other datasets.", "Art. 5a, 5b", "Art. 8(4), 9(3)(c)", "high", "V. Ops"],
+    ["Treat unauthorized correlation as a DORA confidentiality breach.", "Art. 5a", "Art. 9(3)(c)", "medium", "V. Ops"],
+    ["Coordinate dual-track breach notification (DORA + DPA under GDPR Art. 33).", "Art. 19a", "Art. 17, 19", "high", "V. Ops"],
+    ["Align wallet provider's eIDAS termination plan with DORA's exit strategy.", "Art. 24", "Art. 28(8)", "medium", "V. Ops"]
+  ],
+  "list-ops-5": [
+    ["Ensure consistency between eIDAS RP registration and internal DORA ICT asset documentation.", "Art. 5b", "Art. 8(4)", "medium", "V. Ops"],
+    ["Technically enforce data minimization by locking wallet request payloads to registered scope.", "Art. 5a, 5b", "Art. 9(3)(c)", "high", "V. Ops"]
+  ],
+  "list-ops-6": [
+    ["Protect relying-party authentication certificates and keys as DORA ICT assets.", "Art. 5b, 45", "Art. 9(4)(d)", "high", "V. Ops"],
+    ["Treat the verifier engine for wallet attestations as a DORA-critical ICT system.", "Art. 5a, 45d", "Art. 8(4)", "high", "V. Ops"],
+    ["Combine eIDAS prohibitions with DORA Art. 30(2)(a) in vendor contracts.", "Art. 5b", "Art. 30(2)(a)", "medium", "V. Ops"],
+    ["Synchronize updates between eIDAS RP registers and DORA ICT third-party registers.", "Art. 5b", "Art. 28(3)", "medium", "V. Ops"],
+    ["Implement privacy-by-design via pseudonym acceptance where legally permitted.", "Art. 5b", "Art. 9", "low", "V. Ops"]
+  ],
+  "list-reg-1": [
+    ["Establish a coordinated regulatory watch for eIDAS implementing acts and DORA RTS/ITS.", "Art. 47, 48", "Art. 15", "high", "VI. Regulatory"],
+    ["Maintain a formal cross-mapping between eIDAS technical specs and DORA RTS/ITS.", "Art. 47, 48", "Art. 15", "medium", "VI. Regulatory"],
+    ["Re-use ENISA-aligned wallet certifications as DORA cybersecurity-assurance evidence.", "Art. 5c", "Art. 28(4)", "medium", "VI. Regulatory"],
+    ["Reconcile eIDAS 2-year vulnerability cadence with DORA's continuous risk-based testing.", "Art. 5c", "Art. 24, 25", "medium", "VI. Regulatory"],
+    ["Automate ingestion of the Commission's list of certified wallets into the DORA register.", "Art. 5d", "Art. 28(3)", "high", "VI. Regulatory"],
+    ["Integrate EUDI Wallet as accepted strong-authentication mechanism within 36 months.", "Art. 5f", "Art. 9(4)(d)", "high", "VI. Regulatory"],
+    ["Architect wallet acceptance to transmit only minimum necessary attributes.", "Art. 5a, 5b", "Art. 9", "high", "VI. Regulatory"],
+    ["Map eIDAS assurance levels onto DORA-driven risk classifications.", "Art. 8", "Art. 6, 8", "medium", "VI. Regulatory"],
+    ["Treat foreign-eID authentication endpoints as critical ICT dependencies with BCP fallbacks.", "Art. 8, 14", "Art. 11, 28", "high", "VI. Regulatory"],
+    ["Build a mapping matrix linking eIDAS assurance levels to DORA risk tiers.", "Art. 8", "Art. 6, 8", "medium", "VI. Regulatory"],
+    ["Build automated OJ monitoring for eID scheme suspensions/revocations.", "Art. 8, 20", "Art. 11, 28(8)", "medium", "VI. Regulatory"],
+    ["Document liability mapping (eIDAS statutory recourse + DORA operational responsibility).", "Art. 13", "Art. 6, 30", "low", "VI. Regulatory"]
+  ],
+  "list-reg-2": [
+    ["Preserve eIDAS Art. 13(1) statutory rights in DORA-aligned contracts.", "Art. 13", "Art. 30(2)", "medium", "VI. Regulatory"],
+    ["Include Art. 14 recognition status as mandatory data point for non-EU TSPs.", "Art. 14", "Art. 28(3)", "medium", "VI. Regulatory"],
+    ["Require QTSPs to share conformity assessment reports.", "Art. 20, 24", "Art. 28(4)", "high", "VI. Regulatory"],
+    ["Automate monitoring of trusted-list changes for QTSP status withdrawals.", "Art. 22", "Art. 28(3), 30", "high", "VI. Regulatory"],
+    ["Treat trusted-list inclusion as a hard prerequisite in DORA Art. 28(4) due diligence.", "Art. 22", "Art. 28(4)", "high", "VI. Regulatory"],
+    ["Embed the eIDAS 24-hour QTSP notification as DORA incident-response trigger.", "Art. 19a", "Art. 17, 19", "high", "VI. Regulatory"],
+    ["Treat QTSP termination plan as primary input to DORA exit strategy.", "Art. 24", "Art. 28(8)", "medium", "VI. Regulatory"],
+    ["Integrate real-time certificate status checking into ICT control environment.", "Art. 24, 32", "Art. 9, 10", "medium", "VI. Regulatory"],
+    ["Include 'QTSP remote-QSCD compromise' as defined incident scenario.", "Art. 29, 29a", "Art. 19", "medium", "VI. Regulatory"],
+    ["Embed Art. 30 device certification status as mandatory contractual disclosure.", "Art. 30", "Art. 30(2)(e)", "medium", "VI. Regulatory"],
+    ["Integrate qualified preservation into DORA Art. 12 backup framework.", "Art. 34", "Art. 12", "medium", "VI. Regulatory"],
+    ["Apply qualified electronic time stamps to DORA Art. 19(4) reporting events.", "Art. 39, 41", "Art. 19(4)", "high", "VI. Regulatory"],
+    ["Apply QERDS to DORA Art. 19 incident-reporting communications.", "Art. 46a", "Art. 19", "medium", "VI. Regulatory"],
+    ["Deploy QWACs across customer/counterparty/supervisory web endpoints.", "Art. 45", "Art. 9(3)(a)", "medium", "VI. Regulatory"],
+    ["Deploy qEAAs as a KYC/AML onboarding primitive.", "Art. 45d, 45e", "Art. 9", "high", "VI. Regulatory"],
+    ["Deploy QELs for ICT audit trails of critical-function operations.", "Art. 45l", "Art. 13(2), 17", "medium", "VI. Regulatory"],
+    ["Inventory eIDAS-dependent infrastructure subject to Art. 51 transitions.", "Art. 51", "Art. 6(8), 8(4)", "low", "VI. Regulatory"]
+  ]
+};
+
+const benefits = {
+  "benefits-1": [
+    ["Unified inventories", "One inventory serves DORA registers, eIDAS dependency maps, and internal vendor overviews."],
+    ["Consolidated CMDB / ICT asset repository", "Covers DORA Art. 8(4), Art. 8(5) and ISO 27001 simultaneously."],
+    ["Centralized audit log platform", "Serves eIDAS Art. 24 traceability, DORA Art. 13 logging, GDPR rights and MaRisk/BAIT."],
+    ["Machine-readable wallet data", "Signed JSON, mDoc, SD-JWT enable straight-through processing."],
+    ["Standardized protocols", "OpenID4VP, SD-JWT VC bring cryptographic security out-of-the-box."]
+  ],
+  "benefits-2": [
+    ["Multi-wallet architecture", "Addresses DORA concentration risk, eases exit strategies."],
+    ["Leverage existing TPRM", "Adapt supplier assessment to wallet providers."],
+    ["State wallets as trust anchors", "Reduce due-diligence vs. private providers."],
+    ["Re-use eIDAS Art. 5c certification as DORA evidence", "Saves internal assessments."],
+    ["Risk-based resource allocation", "Differentiate state vs. private wallets."],
+    ["Modern CI/CD with security gates", "SAST, DAST, dependency-scanning meet DORA change management."],
+    ["Centralized SBOM", "One artifact for audit, supply-chain risk and licensing."],
+    ["Open-source community as threat intel", "Free CVE warnings from EUDI communities."],
+    ["Unified vulnerability management tool", "Reduces licensing and tooling costs."]
+  ],
+  "benefits-3": [
+    ["Re-use encryption & key management", "Avoids parallel cryptographic stacks."],
+    ["Selective disclosure (eIDAS 5a, 5b)", "Less personal data → lower GDPR risk and attack surface."],
+    ["Centralized API gateway", "TLS, AuthN and rate-limiting for all wallet endpoints."],
+    ["Pseudonymous pre-onboarding", "Conversion optimization without immediate KYC friction."],
+    ["Centralized HSM infrastructure (Art. 29/29a)", "One HSM serves wallet keys, signature certs and SCA keys."],
+    ["Wallet-to-wallet B2B", "Standardized protocols replace bilateral integrations."],
+    ["LoA-High wallets (Art. 8)", "Enable high-value processes without extra authentication."]
+  ],
+  "benefits-4": [
+    ["Unified logging & backup framework", "Satisfies DORA Art. 12, MiFID II, Solvency II and eIDAS Art. 24."],
+    ["Automated GDPR Art. 17 intake via wallet", "Standardised erasure-request pipeline."],
+    ["Combined GRC platform", "Converges GDPR and DORA incident management."],
+    ["Wallet-DPA channel as early warning", "External compliance signal at zero cost."],
+    ["Unified incident triage", "GDPR, DORA and cyber indicators in one process."],
+    ["QES via wallet (Art. 25)", "Eliminates media breaks; reduces onboarding time."],
+    ["Reusable secure upload service", "Single channel reused across business lines."],
+    ["Portability built into standard contracts", "Consistent coverage across vendors."],
+    ["Zero-trust extended to all external APIs", "Wallet endpoint design becomes perimeter standard."],
+    ["Pre-coordinated multi-regulator playbooks", "DORA Art. 19 + eIDAS Art. 19a notifications."],
+    ["Unified incident classification matrix", "Maps eIDAS Art. 19a and DORA Art. 17 criteria."],
+    ["Automated OJ-list monitoring", "Real-time triggers for contractual workflows."],
+    ["Canonical wallet-provider data model", "Projected into eIDAS and DORA registers."],
+    ["Unified Level 2 watch function", "Monitors eIDAS Art. 47/48 and DORA RTS/ITS simultaneously."],
+    ["Single integrated cybersecurity framework", "Mapped against DORA, NIS2 and eIDAS Art. 5c/19."]
+  ]
+};
+
+let allTaskIds = [];
+
+function getState(taskId) {
+  const raw = localStorage.getItem('state-' + taskId);
+  if (!raw) return { done:false, owner:'', due:'', priority:'' };
+  try { return JSON.parse(raw); } catch(e){ return { done:false, owner:'', due:'', priority:'' }; }
+}
+function setState(taskId, state) { localStorage.setItem('state-' + taskId, JSON.stringify(state)); }
+
+function renderTasks() {
+  let id = 0; allTaskIds = [];
+  Object.keys(tasks).forEach(listId => {
+    const ul = document.getElementById(listId);
+    if (!ul) return;
+    ul.innerHTML = '';
+    tasks[listId].forEach(([text, eidas, dora, defPrio, domain]) => {
+      const taskId = 'task-' + (id++);
+      allTaskIds.push(taskId);
+      const state = getState(taskId);
+      const prio = state.priority || defPrio;
+      const topic = topicFor(eidas);
+      const li = document.createElement('li');
+      li.className = 'task-item priority-' + prio + (state.done ? ' completed' : '');
+      li.dataset.taskId = taskId;
+      li.dataset.priority = prio;
+      li.dataset.eidas = eidas;
+      li.dataset.dora = dora;
+      li.dataset.text = text;
+      li.dataset.domain = domain;
+      li.dataset.topic = topic;
+      li.innerHTML = `
+        <div class="task-row-top">
+          <input type="checkbox" id="${taskId}" ${state.done?'checked':''} onchange="toggleTask('${taskId}')">
+          <label for="${taskId}" class="task-label">${text}</label>
+        </div>
+        <div class="article-tags">
+          <span class="article-tag tag-eidas">eIDAS: ${eidas}</span>
+          <span class="article-tag tag-topic">📖 ${topic}</span>
+          <span class="article-tag tag-dora">DORA: ${dora}</span>
+        </div>
+        <div class="task-meta">
+          <div class="meta-field"><label>Owner</label>
+            <input type="text" placeholder="Name / team" value="${state.owner||''}" oninput="updateField('${taskId}','owner',this.value)"></div>
+          <div class="meta-field"><label>Due date</label>
+            <input type="date" value="${state.due||''}" onchange="updateField('${taskId}','due',this.value)"></div>
+          <div class="meta-field"><label>Priority</label>
+            <select onchange="updateField('${taskId}','priority',this.value); refreshPriorityClass('${taskId}',this.value)">
+              <option value="high" ${prio==='high'?'selected':''}>High</option>
+              <option value="medium" ${prio==='medium'?'selected':''}>Medium</option>
+              <option value="low" ${prio==='low'?'selected':''}>Low</option>
+            </select></div>
+        </div>`;
+      ul.appendChild(li);
+    });
+  });
+  updateKPIs();
+  renderMatrix();
+}
+
+function renderBenefits() {
+  Object.keys(benefits).forEach(g => {
+    const c = document.getElementById(g);
+    if (!c) return;
+    c.innerHTML = '';
+    benefits[g].forEach(([t,d]) => {
+      const card = document.createElement('div');
+      card.className = 'benefit-card';
+      card.innerHTML = `<h4>${t}</h4><p>${d}</p>`;
+      c.appendChild(card);
+    });
+  });
+}
+
+function renderMatrix() {
+  const tbody = document.getElementById('matrix-body');
+  tbody.innerHTML = '';
+  let rowNum = 1;
+  Object.keys(tasks).forEach(listId => {
+    tasks[listId].forEach(([text, eidas, dora, defPrio, domain]) => {
+      const taskId = 'task-' + (rowNum - 1);
+      const state = getState(taskId);
+      const prio = state.priority || defPrio;
+      const topic = topicFor(eidas);
+      const tr = document.createElement('tr');
+      tr.dataset.priority = prio;
+      tr.dataset.text = (text+' '+eidas+' '+dora+' '+domain+' '+topic).toLowerCase();
+      tr.innerHTML = `
+        <td>${rowNum}</td>
+        <td>${text}</td>
+        <td class="col-domain">${domain}</td>
+        <td class="col-eidas">${eidas}</td>
+        <td class="col-topic">${topic}</td>
+        <td class="col-dora">${dora}</td>
+        <td><span class="pill pill-${prio}">${prio.toUpperCase()}</span></td>`;
+      tbody.appendChild(tr);
+      rowNum++;
+    });
+  });
+}
+
+let matrixSortAsc = true, matrixLastSortCol = -1;
+function sortMatrix(c) {
+  const tbody = document.getElementById('matrix-body');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  matrixSortAsc = (matrixLastSortCol === c) ? !matrixSortAsc : true;
+  matrixLastSortCol = c;
+  rows.sort((a,b) => {
+    const av = a.children[c].textContent.trim().toLowerCase();
+    const bv = b.children[c].textContent.trim().toLowerCase();
+    const an = parseFloat(av), bn = parseFloat(bv);
+    if (!isNaN(an) && !isNaN(bn)) return matrixSortAsc ? an-bn : bn-an;
+    return matrixSortAsc ? av.localeCompare(bv) : bv.localeCompare(av);
+  });
+  rows.forEach(r => tbody.appendChild(r));
+}
+
+function toggleTask(taskId) {
+  const cb = document.getElementById(taskId);
+  const li = cb.closest('.task-item');
+  const s = getState(taskId); s.done = cb.checked; setState(taskId, s);
+  li.classList.toggle('completed', cb.checked);
+  updateKPIs();
+}
+function updateField(taskId, field, value) {
+  const s = getState(taskId); s[field] = value; setState(taskId, s);
+  updateKPIs();
+  if (field === 'priority') renderMatrix();
+}
+function refreshPriorityClass(taskId, prio) {
+  const li = document.querySelector(`.task-item[data-task-id="${taskId}"]`);
+  if (!li) return;
+  li.classList.remove('priority-high','priority-medium','priority-low');
+  li.classList.add('priority-' + prio);
+  li.dataset.priority = prio;
+}
+function updateKPIs() {
+  const items = document.querySelectorAll('.task-item');
+  const total = items.length;
+  let completed = 0, highOpen = 0, overdue = 0;
+  const today = new Date(); today.setHours(0,0,0,0);
+  items.forEach(li => {
+    const s = getState(li.dataset.taskId);
+    if (s.done) completed++;
+    if (li.dataset.priority === 'high' && !s.done) highOpen++;
+    if (s.due && !s.done) { const d = new Date(s.due); if (d < today) overdue++; }
+  });
+  const pct = total === 0 ? 0 : Math.round((completed/total)*100);
+  document.getElementById('kpi-total').textContent = total;
+  document.getElementById('kpi-completed').textContent = completed;
+  document.getElementById('kpi-percent').textContent = pct + '%';
+  document.getElementById('kpi-high').textContent = highOpen;
+  document.getElementById('kpi-overdue').textContent = overdue;
+  const bar = document.getElementById('overall-progress');
+  bar.style.width = pct + '%'; bar.textContent = pct + '%';
+}
+function switchTab(evt, tabId) {
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  evt.currentTarget.classList.add('active');
+}
+function filterAll() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const status = document.getElementById('status-filter').value;
+  const prio = document.getElementById('priority-filter').value;
+  document.querySelectorAll('.task-item').forEach(item => {
+    const s = getState(item.dataset.taskId);
+    const combined = (item.dataset.text+' '+item.dataset.eidas+' '+item.dataset.dora+' '+item.dataset.topic+' '+(s.owner||'')).toLowerCase();
+    const mt = combined.includes(q);
+    const ms = status === 'all' || (status === 'completed' && s.done) || (status === 'pending' && !s.done);
+    const mp = prio === 'all' || item.dataset.priority === prio;
+    item.style.display = (mt && ms && mp) ? '' : 'none';
+  });
+  document.querySelectorAll('#matrix-body tr').forEach(row => {
+    const mt = row.dataset.text.includes(q);
+    const mp = prio === 'all' || row.dataset.priority === prio;
+    row.style.display = (mt && mp) ? '' : 'none';
+  });
+}
+function resetAll() {
+  if (!confirm('Reset all progress, owners, dates and priorities?')) return;
+  allTaskIds.forEach(id => localStorage.removeItem('state-' + id));
+  renderTasks();
+}
+function exportProgress() {
+  const data = [];
+  document.querySelectorAll('.task-item').forEach((item, idx) => {
+    const s = getState(item.dataset.taskId);
+    data.push({
+      id: idx+1, task: item.dataset.text, domain: item.dataset.domain,
+      eidas_article: item.dataset.eidas, eidas_topic: item.dataset.topic,
+      dora_article: item.dataset.dora, priority: item.dataset.priority,
+      owner: s.owner || '', due_date: s.due || '', completed: !!s.done
+    });
+  });
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+  triggerDownload(blob, 'dora-eidas-progress-' + new Date().toISOString().split('T')[0] + '.json');
+}
+function exportCSV() {
+  const headers = ['#','Task','Domain','eIDAS Article','eIDAS Topic','DORA Article','Priority','Owner','Due Date','Completed'];
+  const rows = [headers];
+  document.querySelectorAll('.task-item').forEach((item, idx) => {
+    const s = getState(item.dataset.taskId);
+    rows.push([
+      idx+1, '"'+item.dataset.text.replace(/"/g,'""')+'"', item.dataset.domain,
+      item.dataset.eidas, '"'+item.dataset.topic.replace(/"/g,'""')+'"',
+      item.dataset.dora, item.dataset.priority,
+      '"'+(s.owner||'').replace(/"/g,'""')+'"', s.due||'', s.done?'Yes':'No'
+    ]);
+  });
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  triggerDownload(blob, 'dora-eidas-traceability-' + new Date().toISOString().split('T')[0] + '.csv');
+}
+function triggerDownload(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+renderTasks();
+renderBenefits();
+</script>
+</body>
+</html>
