@@ -3,238 +3,456 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DORA & eIDAS 2.0 Compliance Dashboard — Validated</title>
+<title>DORA & eIDAS 2.0 Compliance Dashboard | PwC</title>
 <style>
+  :root {
+    --pwc-orange: #D04A02;
+    --pwc-orange-dark: #DB4E18;
+    --pwc-orange-light: #E87722;
+    --pwc-yellow: #FFB600;
+    --pwc-yellow-bright: #F3BE26;
+    --pwc-red: #E0301E;
+    --pwc-red-dark: #AD1B02;
+    --pwc-pink: #E669A2;
+    --pwc-rose: #DB536A;
+    --pwc-black: #000000;
+    --pwc-grey-900: #2D2D2D;
+    --pwc-grey-700: #464646;
+    --pwc-grey-500: #7D7D7D;
+    --pwc-grey-300: #BDBDBD;
+    --pwc-grey-100: #F2F2F2;
+    --pwc-white: #FFFFFF;
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    color: #e2e8f0;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: var(--pwc-grey-100);
+    color: var(--pwc-grey-900);
     min-height: 100vh;
-    padding: 20px;
+    padding: 24px;
+    line-height: 1.5;
   }
   header {
-    background: linear-gradient(90deg, #d04a02 0%, #e87722 100%);
-    padding: 30px;
-    border-radius: 12px;
-    margin-bottom: 25px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    background: var(--pwc-white);
+    border-top: 6px solid var(--pwc-orange);
+    border-radius: 2px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
   }
-  header h1 { font-size: 2.2em; color: white; margin-bottom: 8px; }
-  header p { color: rgba(255,255,255,0.9); font-size: 1.05em; }
+  .header-text h1 {
+    font-size: 1.9em;
+    color: var(--pwc-black);
+    margin-bottom: 6px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .header-text p {
+    color: var(--pwc-grey-500);
+    font-size: 0.98em;
+  }
+  .pwc-logo { display: flex; align-items: center; gap: 14px; }
+  .pwc-logo-mark { display: flex; flex-direction: column; line-height: 1; }
+  .pwc-logo-mark .squares { display: flex; gap: 3px; margin-bottom: 6px; }
+  .pwc-logo-mark .squares span { width: 11px; height: 11px; display: block; }
+  .pwc-logo-mark .sq1 { background: var(--pwc-yellow); }
+  .pwc-logo-mark .sq2 { background: var(--pwc-orange-light); }
+  .pwc-logo-mark .sq3 { background: var(--pwc-orange); }
+  .pwc-logo-mark .sq4 { background: var(--pwc-red-dark); }
+  .pwc-logo-mark .wordmark {
+    font-weight: 700; font-size: 1.25em;
+    color: var(--pwc-black); letter-spacing: -0.03em;
+  }
   .validated-badge {
     display: inline-block;
-    background: #10b981;
-    color: white;
-    padding: 3px 10px;
-    border-radius: 12px;
-    font-size: 0.75em;
-    font-weight: bold;
-    margin-left: 10px;
-    vertical-align: middle;
+    background: var(--pwc-grey-100);
+    color: var(--pwc-grey-700);
+    padding: 4px 12px;
+    border-radius: 2px;
+    font-size: 0.7em;
+    font-weight: 600;
+    margin-left: 8px;
+    border-left: 3px solid var(--pwc-yellow);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
   .kpi-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 18px;
-    margin-bottom: 30px;
+    gap: 16px;
+    margin-bottom: 24px;
   }
   .kpi-card {
-    background: #1e293b;
-    border-left: 4px solid #e87722;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    transition: transform 0.2s;
+    background: var(--pwc-white);
+    border-top: 4px solid var(--pwc-orange);
+    padding: 20px 22px;
+    border-radius: 2px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    transition: transform 0.15s, box-shadow 0.15s;
   }
-  .kpi-card:hover { transform: translateY(-3px); }
-  .kpi-card h3 { color: #94a3b8; font-size: 0.8em; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-  .kpi-card .value { font-size: 2em; font-weight: bold; color: #e87722; }
-  .kpi-card .sub { font-size: 0.8em; color: #94a3b8; margin-top: 4px; }
+  .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .kpi-card.warn { border-top-color: var(--pwc-yellow); }
+  .kpi-card.alert { border-top-color: var(--pwc-red); }
+  .kpi-card.success { border-top-color: var(--pwc-orange-dark); }
+  .kpi-card h3 {
+    color: var(--pwc-grey-500);
+    font-size: 0.72em;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .kpi-card .value {
+    font-size: 2.1em; font-weight: 700;
+    color: var(--pwc-black); letter-spacing: -0.02em;
+  }
+  .kpi-card.alert .value { color: var(--pwc-red); }
+  .kpi-card.warn .value { color: var(--pwc-orange); }
+  .kpi-card.success .value { color: var(--pwc-orange-dark); }
+  .kpi-card .sub { font-size: 0.78em; color: var(--pwc-grey-500); margin-top: 4px; }
   .tabs {
-    display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;
-    border-bottom: 2px solid #334155;
+    display: flex; flex-wrap: wrap; gap: 0;
+    margin-bottom: 20px;
+    background: var(--pwc-white);
+    border-radius: 2px;
+    padding: 0;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    overflow: hidden;
   }
   .tab-btn {
-    background: #1e293b; color: #cbd5e1; border: none;
-    padding: 12px 20px; cursor: pointer; border-radius: 8px 8px 0 0;
-    font-size: 0.95em; font-weight: 500; transition: all 0.2s;
+    background: var(--pwc-white);
+    color: var(--pwc-grey-700);
+    border: none;
+    padding: 14px 22px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 600;
+    transition: all 0.15s;
     border-bottom: 3px solid transparent;
+    font-family: inherit;
   }
-  .tab-btn:hover { background: #334155; }
-  .tab-btn.active { background: #e87722; color: white; border-bottom-color: #d04a02; }
+  .tab-btn:hover { background: var(--pwc-grey-100); color: var(--pwc-orange); }
+  .tab-btn.active {
+    color: var(--pwc-orange);
+    border-bottom-color: var(--pwc-orange);
+    background: var(--pwc-white);
+  }
   .tab-content { display: none; }
-  .tab-content.active { display: block; animation: fadeIn 0.3s; }
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .tab-content.active { display: block; animation: fadeIn 0.25s ease-out; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
   .section-card {
-    background: #1e293b; padding: 25px; border-radius: 12px;
-    margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    background: var(--pwc-white);
+    padding: 28px 32px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   }
-  .section-card h2 { color: #e87722; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #334155; font-size: 1.4em; }
-  .section-card h3 { color: #fbbf24; margin: 18px 0 10px; font-size: 1.1em; }
+  .section-card h2 {
+    color: var(--pwc-black);
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--pwc-orange);
+    font-size: 1.35em;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .section-card h3 {
+    color: var(--pwc-grey-900);
+    margin: 22px 0 12px;
+    font-size: 1.05em;
+    font-weight: 600;
+    padding-left: 10px;
+    border-left: 3px solid var(--pwc-yellow);
+  }
+  .section-card p { color: var(--pwc-grey-700); }
+  .section-card strong { color: var(--pwc-black); }
   .task-list { list-style: none; }
   .task-item {
-    background: #0f172a; margin: 10px 0; padding: 14px 16px;
-    border-radius: 8px; border-left: 3px solid #475569; transition: all 0.2s;
+    background: var(--pwc-white);
+    margin: 10px 0;
+    padding: 16px 18px;
+    border-radius: 2px;
+    border: 1px solid var(--pwc-grey-300);
+    border-left: 4px solid var(--pwc-grey-300);
+    transition: all 0.15s;
   }
-  .task-item:hover { border-left-color: #e87722; background: #1a2638; }
-  .task-item.completed { opacity: 0.6; border-left-color: #10b981; }
-  .task-item.completed .task-label { text-decoration: line-through; }
+  .task-item:hover { border-left-color: var(--pwc-orange); background: var(--pwc-grey-100); }
+  .task-item.completed { background: var(--pwc-grey-100); border-left-color: var(--pwc-grey-500); }
+  .task-item.completed .task-label { text-decoration: line-through; color: var(--pwc-grey-500); }
   .task-row-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
-  .task-row-top input[type="checkbox"] { margin-top: 4px; width: 18px; height: 18px; accent-color: #e87722; cursor: pointer; flex-shrink: 0; }
-  .task-label { flex: 1; line-height: 1.5; font-size: 0.95em; cursor: pointer; }
+  .task-row-top input[type="checkbox"] {
+    margin-top: 4px; width: 18px; height: 18px;
+    accent-color: var(--pwc-orange); cursor: pointer; flex-shrink: 0;
+  }
+  .task-label { flex: 1; line-height: 1.5; font-size: 0.95em; cursor: pointer; color: var(--pwc-grey-900); }
   .task-meta {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 8px; margin-top: 8px; padding-left: 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+    padding-left: 30px;
   }
-  .meta-field { display: flex; flex-direction: column; gap: 3px; }
-  .meta-field label { font-size: 0.7em; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
+  .meta-field { display: flex; flex-direction: column; gap: 4px; }
+  .meta-field label {
+    font-size: 0.68em;
+    color: var(--pwc-grey-500);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 600;
+  }
   .meta-field input, .meta-field select {
-    background: #1e293b; color: #e2e8f0; border: 1px solid #334155;
-    padding: 5px 8px; border-radius: 4px; font-size: 0.85em;
+    background: var(--pwc-white);
+    color: var(--pwc-grey-900);
+    border: 1px solid var(--pwc-grey-300);
+    padding: 6px 10px;
+    border-radius: 2px;
+    font-size: 0.85em;
+    font-family: inherit;
+    transition: border-color 0.15s;
   }
-  .meta-field input:focus, .meta-field select:focus { outline: none; border-color: #e87722; }
-  .priority-high { border-left: 3px solid #ef4444 !important; }
-  .priority-medium { border-left: 3px solid #fbbf24 !important; }
-  .priority-low { border-left: 3px solid #10b981 !important; }
-  .article-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; padding-left: 30px; }
-  .article-tag { font-size: 0.72em; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
-  .tag-dora { background: rgba(59,130,246,0.2); color: #60a5fa; border: 1px solid #3b82f6; }
-  .tag-eidas { background: rgba(139,92,246,0.2); color: #a78bfa; border: 1px solid #8b5cf6; }
-  .tag-topic { background: rgba(16,185,129,0.15); color: #6ee7b7; border: 1px solid #10b981; font-style: italic; }
-  .progress-bar-container { background: #0f172a; border-radius: 20px; height: 28px; overflow: hidden; margin: 10px 0; }
+  .meta-field input:focus, .meta-field select:focus {
+    outline: none;
+    border-color: var(--pwc-orange);
+    box-shadow: 0 0 0 2px rgba(208,74,2,0.15);
+  }
+  .priority-high { border-left-color: var(--pwc-red) !important; }
+  .priority-medium { border-left-color: var(--pwc-yellow) !important; }
+  .priority-low { border-left-color: var(--pwc-orange-dark) !important; }
+  .article-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; padding-left: 30px; }
+  .article-tag {
+    font-size: 0.72em; padding: 3px 10px;
+    border-radius: 2px; font-weight: 600; letter-spacing: 0.3px;
+  }
+  .tag-dora { background: var(--pwc-white); color: var(--pwc-red-dark); border: 1px solid var(--pwc-red-dark); }
+  .tag-eidas { background: var(--pwc-white); color: var(--pwc-orange); border: 1px solid var(--pwc-orange); }
+  .tag-topic { background: var(--pwc-grey-100); color: var(--pwc-grey-700); border: 1px solid var(--pwc-grey-300); font-style: italic; }
+  .progress-bar-container {
+    background: var(--pwc-grey-100);
+    border-radius: 2px;
+    height: 28px;
+    overflow: hidden;
+    margin: 10px 0;
+    border: 1px solid var(--pwc-grey-300);
+  }
   .progress-bar {
-    background: linear-gradient(90deg, #d04a02, #e87722, #fbbf24);
-    height: 100%; transition: width 0.5s ease; display: flex;
-    align-items: center; justify-content: flex-end; padding-right: 12px;
-    color: white; font-weight: bold; font-size: 0.85em; min-width: 40px;
+    background: linear-gradient(90deg, var(--pwc-orange) 0%, var(--pwc-orange-light) 50%, var(--pwc-yellow) 100%);
+    height: 100%;
+    transition: width 0.5s ease;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 12px;
+    color: var(--pwc-white);
+    font-weight: 700;
+    font-size: 0.85em;
+    min-width: 40px;
+    letter-spacing: 0.3px;
   }
-  .benefit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
-  .benefit-card { background: #0f172a; padding: 18px; border-radius: 8px; border-top: 3px solid #10b981; }
-  .benefit-card h4 { color: #10b981; margin-bottom: 8px; font-size: 1em; }
-  .benefit-card p { font-size: 0.9em; color: #cbd5e1; line-height: 1.5; }
+  .benefit-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+  .benefit-card {
+    background: var(--pwc-white);
+    padding: 18px 20px;
+    border-radius: 2px;
+    border: 1px solid var(--pwc-grey-300);
+    border-top: 3px solid var(--pwc-orange-dark);
+    transition: box-shadow 0.15s;
+  }
+  .benefit-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .benefit-card h4 { color: var(--pwc-black); margin-bottom: 8px; font-size: 0.98em; font-weight: 700; }
+  .benefit-card p { font-size: 0.88em; color: var(--pwc-grey-700); line-height: 1.55; }
   .filter-bar {
-    background: #1e293b; padding: 15px; border-radius: 10px;
-    margin-bottom: 20px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+    background: var(--pwc-white);
+    padding: 16px 20px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    border-left: 4px solid var(--pwc-orange);
   }
   .filter-bar input, .filter-bar select {
-    background: #0f172a; color: #e2e8f0; border: 1px solid #334155;
-    padding: 8px 12px; border-radius: 6px; font-size: 0.95em;
+    background: var(--pwc-white);
+    color: var(--pwc-grey-900);
+    border: 1px solid var(--pwc-grey-300);
+    padding: 9px 12px;
+    border-radius: 2px;
+    font-size: 0.92em;
+    font-family: inherit;
   }
-  .filter-bar input { flex: 1; min-width: 200px; }
+  .filter-bar input:focus, .filter-bar select:focus { outline: none; border-color: var(--pwc-orange); }
+  .filter-bar input { flex: 1; min-width: 220px; }
   .filter-bar button {
-    background: #e87722; color: white; border: none;
-    padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 500;
+    background: var(--pwc-orange);
+    color: var(--pwc-white);
+    border: none;
+    padding: 9px 18px;
+    border-radius: 2px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9em;
+    font-family: inherit;
+    transition: background 0.15s;
+    letter-spacing: 0.3px;
   }
-  .filter-bar button:hover { background: #d04a02; }
-  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; font-weight: bold; margin-left: 8px; }
-  .badge-dora { background: #3b82f6; color: white; }
-  .badge-eidas { background: #8b5cf6; color: white; }
-  .badge-both { background: #ec4899; color: white; }
-  .matrix-wrapper { overflow-x: auto; background: #1e293b; border-radius: 12px; padding: 20px; }
-  table.matrix { width: 100%; border-collapse: collapse; font-size: 0.88em; }
-  table.matrix thead { background: linear-gradient(90deg, #d04a02, #e87722); position: sticky; top: 0; }
+  .filter-bar button:hover { background: var(--pwc-orange-dark); }
+  .filter-bar button.secondary {
+    background: var(--pwc-white);
+    color: var(--pwc-grey-700);
+    border: 1px solid var(--pwc-grey-300);
+  }
+  .filter-bar button.secondary:hover {
+    background: var(--pwc-grey-100);
+    border-color: var(--pwc-orange);
+    color: var(--pwc-orange);
+  }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 2px;
+    font-size: 0.72em;
+    font-weight: 700;
+    margin-left: 8px;
+    letter-spacing: 0.3px;
+    vertical-align: middle;
+  }
+  .badge-dora { background: var(--pwc-red-dark); color: var(--pwc-white); }
+  .badge-eidas { background: var(--pwc-orange); color: var(--pwc-white); }
+  .badge-both { background: var(--pwc-pink); color: var(--pwc-white); }
+  .matrix-wrapper {
+    overflow-x: auto;
+    background: var(--pwc-white);
+    border-radius: 2px;
+    padding: 0;
+    border: 1px solid var(--pwc-grey-300);
+  }
+  table.matrix { width: 100%; border-collapse: collapse; font-size: 0.86em; }
+  table.matrix thead { background: var(--pwc-orange); position: sticky; top: 0; }
   table.matrix th {
-    padding: 12px 10px; text-align: left; color: white; font-weight: 600;
-    border: 1px solid #334155; cursor: pointer; user-select: none;
+    padding: 13px 12px;
+    text-align: left;
+    color: var(--pwc-white);
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    user-select: none;
+    letter-spacing: 0.3px;
+    font-size: 0.92em;
   }
-  table.matrix th:hover { background: rgba(0,0,0,0.2); }
-  table.matrix td { padding: 10px; border: 1px solid #334155; vertical-align: top; line-height: 1.4; }
-  table.matrix tr:nth-child(even) { background: #0f172a; }
-  table.matrix tr:hover { background: #1a2638; }
-  table.matrix .col-eidas { color: #a78bfa; font-weight: 600; white-space: nowrap; }
-  table.matrix .col-dora { color: #60a5fa; font-weight: 600; white-space: nowrap; }
-  table.matrix .col-domain { color: #fbbf24; font-size: 0.85em; }
-  table.matrix .col-topic { color: #6ee7b7; font-size: 0.85em; font-style: italic; }
-  .pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; font-weight: bold; }
-  .pill-high { background: #ef4444; color: white; }
-  .pill-medium { background: #fbbf24; color: #1f2937; }
-  .pill-low { background: #10b981; color: white; }
-  .changelog {
-    background: rgba(16,185,129,0.1); border-left: 4px solid #10b981;
-    padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;
+  table.matrix th:hover { background: var(--pwc-orange-dark); }
+  table.matrix td {
+    padding: 11px 12px;
+    border-bottom: 1px solid var(--pwc-grey-300);
+    vertical-align: top;
+    line-height: 1.45;
+    color: var(--pwc-grey-900);
   }
-  .changelog h3 { color: #10b981; margin-bottom: 10px; }
-  .changelog ul { padding-left: 20px; line-height: 1.7; font-size: 0.92em; }
-  footer { text-align: center; color: #64748b; padding: 20px; font-size: 0.85em; margin-top: 30px; }
+  table.matrix tr:nth-child(even) { background: var(--pwc-grey-100); }
+  table.matrix tr:hover { background: #FFF4EC; }
+  table.matrix .col-eidas { color: var(--pwc-orange); font-weight: 700; white-space: nowrap; }
+  table.matrix .col-dora { color: var(--pwc-red-dark); font-weight: 700; white-space: nowrap; }
+  table.matrix .col-domain { color: var(--pwc-grey-700); font-size: 0.88em; font-weight: 600; }
+  table.matrix .col-topic { color: var(--pwc-grey-700); font-size: 0.85em; font-style: italic; }
+  .pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 2px;
+    font-size: 0.72em;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .pill-high { background: var(--pwc-red); color: var(--pwc-white); }
+  .pill-medium { background: var(--pwc-yellow); color: var(--pwc-grey-900); }
+  .pill-low { background: var(--pwc-orange-dark); color: var(--pwc-white); }
+  footer {
+    text-align: center;
+    color: var(--pwc-grey-500);
+    padding: 24px;
+    font-size: 0.82em;
+    margin-top: 30px;
+    border-top: 1px solid var(--pwc-grey-300);
+  }
+  footer strong { color: var(--pwc-orange); }
+  ::-webkit-scrollbar { height: 10px; width: 10px; }
+  ::-webkit-scrollbar-track { background: var(--pwc-grey-100); }
+  ::-webkit-scrollbar-thumb { background: var(--pwc-grey-300); border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--pwc-orange); }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>🛡️ DORA & eIDAS 2.0 Compliance Dashboard <span class="validated-badge">✓ Validated against eIDAS PDF</span></h1>
-  <p>Strategic overview for insurers — Article references cross-checked against eIDAS_text_analysis.pdf</p>
+  <div class="header-text">
+    <h1>DORA &amp; eIDAS 2.0 Compliance Dashboard
+      <span class="validated-badge">✓ Validated</span>
+    </h1>
+    <p>Strategic overview for insurers — at the intersection of digital operational resilience and electronic identity</p>
+  </div>
+  <div class="pwc-logo">
+    <div class="pwc-logo-mark">
+      <div class="squares">
+        <span class="sq1"></span><span class="sq2"></span><span class="sq3"></span><span class="sq4"></span>
+      </div>
+      <div class="wordmark">pwc</div>
+    </div>
+  </div>
 </header>
 
 <div class="kpi-grid">
   <div class="kpi-card"><h3>Total Tasks</h3><div class="value" id="kpi-total">0</div><div class="sub">Across 6 domains</div></div>
-  <div class="kpi-card"><h3>Completed</h3><div class="value" id="kpi-completed" style="color:#10b981;">0</div><div class="sub">Tasks marked done</div></div>
+  <div class="kpi-card success"><h3>Completed</h3><div class="value" id="kpi-completed">0</div><div class="sub">Tasks marked done</div></div>
   <div class="kpi-card"><h3>Progress</h3><div class="value" id="kpi-percent">0%</div><div class="sub">Completion rate</div></div>
-  <div class="kpi-card"><h3>High Priority Open</h3><div class="value" id="kpi-high" style="color:#ef4444;">0</div><div class="sub">Need attention</div></div>
-  <div class="kpi-card"><h3>Overdue</h3><div class="value" id="kpi-overdue" style="color:#ef4444;">0</div><div class="sub">Past due date</div></div>
-  <div class="kpi-card"><h3>Efficiency Levers</h3><div class="value" style="color:#fbbf24;">90+</div><div class="sub">Synergy opportunities</div></div>
+  <div class="kpi-card alert"><h3>High Priority Open</h3><div class="value" id="kpi-high">0</div><div class="sub">Need attention</div></div>
+  <div class="kpi-card alert"><h3>Overdue</h3><div class="value" id="kpi-overdue">0</div><div class="sub">Past due date</div></div>
+  <div class="kpi-card warn"><h3>Efficiency Levers</h3><div class="value">90+</div><div class="sub">Synergy opportunities</div></div>
 </div>
 
 <div class="section-card">
-  <h2>📊 Overall Compliance Progress</h2>
-  <div class="progress-bar-container"><div class="progress-bar" id="overall-progress" style="width: 0%;">0%</div></div>
+  <h2>Overall Compliance Progress</h2>
+  <div class="progress-bar-container"><div class="progress-bar" id="overall-progress" style="width:0%;">0%</div></div>
 </div>
 
 <div class="tabs">
-  <button class="tab-btn active" onclick="switchTab(event,'tab-overview')">Overview</button>
-  <button class="tab-btn" onclick="switchTab(event,'tab-tprm')">I. TPRM & Wallet</button>
+  <button class="tab-btn active" onclick="switchTab(event,'tab-tprm')">I. TPRM &amp; Wallet</button>
   <button class="tab-btn" onclick="switchTab(event,'tab-code')">II. Open-Source Code</button>
-  <button class="tab-btn" onclick="switchTab(event,'tab-data')">III. Data & Security</button>
-  <button class="tab-btn" onclick="switchTab(event,'tab-incident')">IV. Incident & Resilience</button>
+  <button class="tab-btn" onclick="switchTab(event,'tab-data')">III. Data &amp; Security</button>
+  <button class="tab-btn" onclick="switchTab(event,'tab-incident')">IV. Incident &amp; Resilience</button>
   <button class="tab-btn" onclick="switchTab(event,'tab-ops')">V. Operational Security</button>
   <button class="tab-btn" onclick="switchTab(event,'tab-regulatory')">VI. Regulatory Alignment</button>
-  <button class="tab-btn" onclick="switchTab(event,'tab-matrix')">🔗 Traceability Matrix</button>
-  <button class="tab-btn" onclick="switchTab(event,'tab-benefits')">💡 Efficiency Benefits</button>
+  <button class="tab-btn" onclick="switchTab(event,'tab-matrix')">Traceability Matrix</button>
+  <button class="tab-btn" onclick="switchTab(event,'tab-benefits')">Efficiency Benefits</button>
 </div>
 
 <div class="filter-bar">
-  <input type="text" id="search-input" placeholder="🔍 Search tasks, articles, topics, owners..." oninput="filterAll()">
+  <input type="text" id="search-input" placeholder="Search tasks, articles, topics, owners…" oninput="filterAll()">
   <select id="status-filter" onchange="filterAll()">
-    <option value="all">All statuses</option><option value="pending">Pending</option><option value="completed">Completed</option>
+    <option value="all">All statuses</option>
+    <option value="pending">Pending</option>
+    <option value="completed">Completed</option>
   </select>
   <select id="priority-filter" onchange="filterAll()">
-    <option value="all">All priorities</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option>
+    <option value="all">All priorities</option>
+    <option value="high">High</option>
+    <option value="medium">Medium</option>
+    <option value="low">Low</option>
   </select>
-  <button onclick="resetAll()">Reset all</button>
+  <button class="secondary" onclick="resetAll()">Reset all</button>
   <button onclick="exportProgress()">Export JSON</button>
   <button onclick="exportCSV()">Export CSV</button>
 </div>
 
-<div class="tab-content active" id="tab-overview">
-  <div class="section-card">
-    <h2>🎯 Strategic Overview</h2>
-    <p style="line-height:1.7; margin-bottom:15px;">
-      The intersection of <strong style="color:#e87722;">DORA</strong> and <strong style="color:#e87722;">eIDAS 2.0</strong> creates both regulatory burden and strategic opportunity. This dashboard guides insurers through six compliance domains and traces each control back to its underlying eIDAS and DORA articles.
-    </p>
-
-    <div class="changelog">
-      <h3>✅ Validation against eIDAS_text_analysis.pdf — corrections applied</h3>
-      <ul>
-        <li><strong>Art. 19a added</strong> — 24-hour QTSP breach notification SLA is correctly mapped to Art. 19a (not Art. 19).</li>
-        <li><strong>Art. 39 corrected</strong> — Art. 39 refers to qualified electronic time stamps (QTS). HSM seal-creation keys are now correctly mapped to Art. 29 / 29a (QSCD & QTSP key management).</li>
-        <li><strong>Art. 46a added</strong> — QERDS (Qualified Electronic Registered Delivery Services) is correctly under Art. 46a, not 43/44 (which cover seals).</li>
-        <li><strong>Art. 46b refined</strong> — now correctly cited only for electronic-document non-discrimination, not QTSP conformity (which is Art. 20/24).</li>
-        <li><strong>Topic labels added</strong> — every article reference now shows its official topic (e.g., "Wallets", "Trust lists", "QWACs") so reviewers can verify mappings at a glance.</li>
-        <li>All other article references in the previous version were confirmed correct against the PDF.</li>
-      </ul>
-    </div>
-
-    <h3>How to use this dashboard</h3>
-    <ul style="line-height:1.8; padding-left:20px;">
-      <li>✅ Tick off compliance tasks — progress auto-saves in your browser.</li>
-      <li>👤 Assign an <strong>owner</strong>, <strong>due date</strong> and <strong>priority</strong> for each task.</li>
-      <li>🔗 Open the <strong>Traceability Matrix</strong> to see control ↔ eIDAS ↔ DORA mappings with topic labels.</li>
-      <li>📤 Export progress as JSON or a traceability CSV.</li>
-    </ul>
-  </div>
-</div>
-
-<div class="tab-content" id="tab-tprm"><div class="section-card"><h2>I. ICT Third-Party Risk Management & Wallet Integration</h2>
+<div class="tab-content active" id="tab-tprm"><div class="section-card"><h2>I. ICT Third-Party Risk Management &amp; Wallet Integration</h2>
   <h3>1. Identify and Document Dependencies <span class="badge badge-both">DORA + eIDAS</span></h3><ul class="task-list" id="list-tprm-1"></ul>
   <h3>2. Risk Assessment and Management <span class="badge badge-dora">DORA</span></h3><ul class="task-list" id="list-tprm-2"></ul>
 </div></div>
@@ -262,7 +480,7 @@
   <h3>2. Access Control <span class="badge badge-dora">DORA</span></h3><ul class="task-list" id="list-ops-2"></ul>
   <h3>3. Strong Authentication <span class="badge badge-both">DORA + eIDAS</span></h3><ul class="task-list" id="list-ops-3"></ul>
   <h3>4. Data Combination and Breach Notification <span class="badge badge-both">DORA + GDPR</span></h3><ul class="task-list" id="list-ops-4"></ul>
-  <h3>5. Registration & Data Minimization <span class="badge badge-eidas">eIDAS</span></h3><ul class="task-list" id="list-ops-5"></ul>
+  <h3>5. Registration &amp; Data Minimization <span class="badge badge-eidas">eIDAS</span></h3><ul class="task-list" id="list-ops-5"></ul>
   <h3>6. Intermediaries and Pseudonyms <span class="badge badge-both">DORA + eIDAS</span></h3><ul class="task-list" id="list-ops-6"></ul>
 </div></div>
 
@@ -273,9 +491,9 @@
 
 <div class="tab-content" id="tab-matrix">
   <div class="section-card">
-    <h2>🔗 Traceability Matrix — eIDAS ↔ DORA ↔ Control</h2>
-    <p style="margin-bottom:15px; line-height:1.6;">
-      Every control mapped to its underlying <strong style="color:#a78bfa;">eIDAS 2.0</strong> article (with validated topic) and <strong style="color:#60a5fa;">DORA</strong> article. Click column headers to sort.
+    <h2>Traceability Matrix — eIDAS ↔ DORA ↔ Control</h2>
+    <p style="margin-bottom:16px; line-height:1.6; color: var(--pwc-grey-700);">
+      Every control mapped to its underlying <strong style="color:var(--pwc-orange);">eIDAS 2.0</strong> article (with validated topic) and <strong style="color:var(--pwc-red-dark);">DORA</strong> article. Click column headers to sort.
     </p>
     <div class="matrix-wrapper">
       <table class="matrix" id="matrix-table">
@@ -295,63 +513,39 @@
 </div>
 
 <div class="tab-content" id="tab-benefits"><div class="section-card">
-  <h2>💡 Efficiency & Benefit-Maximisation Levers</h2>
-  <p style="margin-bottom:20px; line-height:1.6;">Consolidate overlapping obligations into unified controls, frameworks and tooling.</p>
-  <h3>I. Integrated Governance & Data Management</h3><div class="benefit-grid" id="benefits-1"></div>
-  <h3>II. Streamlined Processes & Automation</h3><div class="benefit-grid" id="benefits-2"></div>
-  <h3>III. Enhanced Security & Data Protection</h3><div class="benefit-grid" id="benefits-3"></div>
-  <h3>IV. Integrated Incident & Compliance Response</h3><div class="benefit-grid" id="benefits-4"></div>
+  <h2>Efficiency &amp; Benefit-Maximisation Levers</h2>
+  <p style="margin-bottom:20px; line-height:1.6; color: var(--pwc-grey-700);">Consolidate overlapping obligations into unified controls, frameworks and tooling.</p>
+  <h3>I. Integrated Governance &amp; Data Management</h3><div class="benefit-grid" id="benefits-1"></div>
+  <h3>II. Streamlined Processes &amp; Automation</h3><div class="benefit-grid" id="benefits-2"></div>
+  <h3>III. Enhanced Security &amp; Data Protection</h3><div class="benefit-grid" id="benefits-3"></div>
+  <h3>IV. Integrated Incident &amp; Compliance Response</h3><div class="benefit-grid" id="benefits-4"></div>
 </div></div>
 
-<footer>DORA & eIDAS 2.0 Compliance Dashboard · eIDAS references validated against eIDAS_text_analysis.pdf · Progress saved in your browser</footer>
+<footer>
+  DORA &amp; eIDAS 2.0 Compliance Dashboard · Prototype prepared by <strong>PwC</strong> · eIDAS references validated against source document · Progress saved locally in your browser
+</footer>
 
 <script>
-// eIDAS topic dictionary validated from PDF
 const EIDAS_TOPICS = {
-  "5a": "EU Digital Identity Wallets",
-  "5b": "Relying Parties registration",
-  "5c": "Wallet certification",
-  "5d": "Published wallet list",
-  "5f": "Cross-border wallet acceptance",
-  "8": "eID Means / LoA",
-  "13": "TSP liability",
-  "14": "Third-country trust services",
-  "19": "TSP security (TOMs)",
-  "19a": "QTSP 24-h breach notification",
-  "20": "Supervisory body / QTSP conformity",
-  "22": "Trust lists",
-  "24": "QTSP identity proofing & verification",
-  "25": "Legal effect of e-signatures",
-  "29": "QSCD requirements",
-  "29a": "QTSP key management",
-  "30": "QSCD certification",
-  "32": "QES validation requirements",
-  "32a": "QES validation procedures",
-  "34": "QES validation service",
-  "39": "Qualified time stamps (QTS)",
-  "41": "Legal effect of time stamps",
-  "42": "Qualified electronic seals",
-  "43": "Legal effect of seals",
-  "44": "Q-Seal validation",
-  "45": "QWACs / website authentication",
-  "45d": "Attribute verification against authentic sources",
-  "45e": "EAA issuance to Wallets",
-  "45l": "Qualified electronic ledgers (QELs)",
-  "46a": "QERDS",
-  "46b": "Electronic documents non-discrimination",
-  "47": "Commission delegated acts",
-  "48": "Committee procedure",
-  "51": "Transitional measures"
+  "5a":"EU Digital Identity Wallets","5b":"Relying Parties registration","5c":"Wallet certification",
+  "5d":"Published wallet list","5f":"Cross-border wallet acceptance","8":"eID Means / LoA",
+  "13":"TSP liability","14":"Third-country trust services","19":"TSP security (TOMs)",
+  "19a":"QTSP 24-h breach notification","20":"Supervisory body / QTSP conformity","22":"Trust lists",
+  "24":"QTSP identity proofing & verification","25":"Legal effect of e-signatures","29":"QSCD requirements",
+  "29a":"QTSP key management","30":"QSCD certification","32":"QES validation requirements",
+  "32a":"QES validation procedures","34":"QES validation service","39":"Qualified time stamps (QTS)",
+  "41":"Legal effect of time stamps","42":"Qualified electronic seals","43":"Legal effect of seals",
+  "44":"Q-Seal validation","45":"QWACs / website authentication",
+  "45d":"Attribute verification against authentic sources","45e":"EAA issuance to Wallets",
+  "45l":"Qualified electronic ledgers (QELs)","46a":"QERDS","46b":"Electronic documents non-discrimination",
+  "47":"Commission delegated acts","48":"Committee procedure","51":"Transitional measures"
 };
-
 function topicFor(refs) {
-  // refs string like "Art. 5a, 22" — return concatenated topics
   const tokens = refs.replace(/Art\.\s*/g,'').split(/[,;]/).map(s=>s.trim()).filter(Boolean);
   const topics = tokens.map(t => EIDAS_TOPICS[t]).filter(Boolean);
   return topics.length ? topics.join(' · ') : '—';
 }
 
-// ============== TASK DATA (validated eIDAS references) ==============
 const tasks = {
   "list-tprm-1": [
     ["Identify and document all wallet ecosystem components as ICT third-parties (Wallet Providers, PID Issuers, QEAA Issuers, QTSPs, national RP registers).", "Art. 5a, 5b", "Art. 8(4), 28", "high", "I. TPRM"],
@@ -575,35 +769,24 @@ const benefits = {
 };
 
 let allTaskIds = [];
-
-function getState(taskId) {
-  const raw = localStorage.getItem('state-' + taskId);
-  if (!raw) return { done:false, owner:'', due:'', priority:'' };
-  try { return JSON.parse(raw); } catch(e){ return { done:false, owner:'', due:'', priority:'' }; }
-}
-function setState(taskId, state) { localStorage.setItem('state-' + taskId, JSON.stringify(state)); }
+function getState(t){const r=localStorage.getItem('state-'+t);if(!r)return{done:false,owner:'',due:'',priority:''};try{return JSON.parse(r);}catch(e){return{done:false,owner:'',due:'',priority:''};}}
+function setState(t,s){localStorage.setItem('state-'+t,JSON.stringify(s));}
 
 function renderTasks() {
   let id = 0; allTaskIds = [];
   Object.keys(tasks).forEach(listId => {
     const ul = document.getElementById(listId);
-    if (!ul) return;
-    ul.innerHTML = '';
+    if (!ul) return; ul.innerHTML = '';
     tasks[listId].forEach(([text, eidas, dora, defPrio, domain]) => {
-      const taskId = 'task-' + (id++);
-      allTaskIds.push(taskId);
+      const taskId = 'task-' + (id++); allTaskIds.push(taskId);
       const state = getState(taskId);
       const prio = state.priority || defPrio;
       const topic = topicFor(eidas);
       const li = document.createElement('li');
       li.className = 'task-item priority-' + prio + (state.done ? ' completed' : '');
-      li.dataset.taskId = taskId;
-      li.dataset.priority = prio;
-      li.dataset.eidas = eidas;
-      li.dataset.dora = dora;
-      li.dataset.text = text;
-      li.dataset.domain = domain;
-      li.dataset.topic = topic;
+      li.dataset.taskId = taskId; li.dataset.priority = prio;
+      li.dataset.eidas = eidas; li.dataset.dora = dora;
+      li.dataset.text = text; li.dataset.domain = domain; li.dataset.topic = topic;
       li.innerHTML = `
         <div class="task-row-top">
           <input type="checkbox" id="${taskId}" ${state.done?'checked':''} onchange="toggleTask('${taskId}')">
@@ -611,7 +794,7 @@ function renderTasks() {
         </div>
         <div class="article-tags">
           <span class="article-tag tag-eidas">eIDAS: ${eidas}</span>
-          <span class="article-tag tag-topic">📖 ${topic}</span>
+          <span class="article-tag tag-topic">${topic}</span>
           <span class="article-tag tag-dora">DORA: ${dora}</span>
         </div>
         <div class="task-meta">
@@ -629,15 +812,11 @@ function renderTasks() {
       ul.appendChild(li);
     });
   });
-  updateKPIs();
-  renderMatrix();
+  updateKPIs(); renderMatrix();
 }
-
 function renderBenefits() {
   Object.keys(benefits).forEach(g => {
-    const c = document.getElementById(g);
-    if (!c) return;
-    c.innerHTML = '';
+    const c = document.getElementById(g); if (!c) return; c.innerHTML = '';
     benefits[g].forEach(([t,d]) => {
       const card = document.createElement('div');
       card.className = 'benefit-card';
@@ -646,10 +825,8 @@ function renderBenefits() {
     });
   });
 }
-
 function renderMatrix() {
-  const tbody = document.getElementById('matrix-body');
-  tbody.innerHTML = '';
+  const tbody = document.getElementById('matrix-body'); tbody.innerHTML = '';
   let rowNum = 1;
   Object.keys(tasks).forEach(listId => {
     tasks[listId].forEach(([text, eidas, dora, defPrio, domain]) => {
@@ -661,19 +838,16 @@ function renderMatrix() {
       tr.dataset.priority = prio;
       tr.dataset.text = (text+' '+eidas+' '+dora+' '+domain+' '+topic).toLowerCase();
       tr.innerHTML = `
-        <td>${rowNum}</td>
-        <td>${text}</td>
+        <td>${rowNum}</td><td>${text}</td>
         <td class="col-domain">${domain}</td>
         <td class="col-eidas">${eidas}</td>
         <td class="col-topic">${topic}</td>
         <td class="col-dora">${dora}</td>
         <td><span class="pill pill-${prio}">${prio.toUpperCase()}</span></td>`;
-      tbody.appendChild(tr);
-      rowNum++;
+      tbody.appendChild(tr); rowNum++;
     });
   });
 }
-
 let matrixSortAsc = true, matrixLastSortCol = -1;
 function sortMatrix(c) {
   const tbody = document.getElementById('matrix-body');
@@ -689,7 +863,6 @@ function sortMatrix(c) {
   });
   rows.forEach(r => tbody.appendChild(r));
 }
-
 function toggleTask(taskId) {
   const cb = document.getElementById(taskId);
   const li = cb.closest('.task-item');
@@ -699,15 +872,12 @@ function toggleTask(taskId) {
 }
 function updateField(taskId, field, value) {
   const s = getState(taskId); s[field] = value; setState(taskId, s);
-  updateKPIs();
-  if (field === 'priority') renderMatrix();
+  updateKPIs(); if (field === 'priority') renderMatrix();
 }
 function refreshPriorityClass(taskId, prio) {
-  const li = document.querySelector(`.task-item[data-task-id="${taskId}"]`);
-  if (!li) return;
+  const li = document.querySelector(`.task-item[data-task-id="${taskId}"]`); if (!li) return;
   li.classList.remove('priority-high','priority-medium','priority-low');
-  li.classList.add('priority-' + prio);
-  li.dataset.priority = prio;
+  li.classList.add('priority-' + prio); li.dataset.priority = prio;
 }
 function updateKPIs() {
   const items = document.querySelectorAll('.task-item');
@@ -762,38 +932,33 @@ function exportProgress() {
   const data = [];
   document.querySelectorAll('.task-item').forEach((item, idx) => {
     const s = getState(item.dataset.taskId);
-    data.push({
-      id: idx+1, task: item.dataset.text, domain: item.dataset.domain,
-      eidas_article: item.dataset.eidas, eidas_topic: item.dataset.topic,
-      dora_article: item.dataset.dora, priority: item.dataset.priority,
-      owner: s.owner || '', due_date: s.due || '', completed: !!s.done
-    });
+    data.push({id:idx+1, task:item.dataset.text, domain:item.dataset.domain,
+      eidas_article:item.dataset.eidas, eidas_topic:item.dataset.topic,
+      dora_article:item.dataset.dora, priority:item.dataset.priority,
+      owner:s.owner||'', due_date:s.due||'', completed:!!s.done});
   });
   const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
-  triggerDownload(blob, 'dora-eidas-progress-' + new Date().toISOString().split('T')[0] + '.json');
+  triggerDownload(blob, 'pwc-dora-eidas-progress-' + new Date().toISOString().split('T')[0] + '.json');
 }
 function exportCSV() {
   const headers = ['#','Task','Domain','eIDAS Article','eIDAS Topic','DORA Article','Priority','Owner','Due Date','Completed'];
   const rows = [headers];
   document.querySelectorAll('.task-item').forEach((item, idx) => {
     const s = getState(item.dataset.taskId);
-    rows.push([
-      idx+1, '"'+item.dataset.text.replace(/"/g,'""')+'"', item.dataset.domain,
+    rows.push([idx+1, '"'+item.dataset.text.replace(/"/g,'""')+'"', item.dataset.domain,
       item.dataset.eidas, '"'+item.dataset.topic.replace(/"/g,'""')+'"',
       item.dataset.dora, item.dataset.priority,
-      '"'+(s.owner||'').replace(/"/g,'""')+'"', s.due||'', s.done?'Yes':'No'
-    ]);
+      '"'+(s.owner||'').replace(/"/g,'""')+'"', s.due||'', s.done?'Yes':'No']);
   });
   const csv = rows.map(r => r.join(',')).join('\n');
   const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-  triggerDownload(blob, 'dora-eidas-traceability-' + new Date().toISOString().split('T')[0] + '.csv');
+  triggerDownload(blob, 'pwc-dora-eidas-traceability-' + new Date().toISOString().split('T')[0] + '.csv');
 }
 function triggerDownload(blob, filename) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
   URL.revokeObjectURL(url);
 }
-
 renderTasks();
 renderBenefits();
 </script>
